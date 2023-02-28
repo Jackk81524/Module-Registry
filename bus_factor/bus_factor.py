@@ -30,9 +30,10 @@ def parse_numstat_block_fixed(commit_line, block):
 eltcsv.parse_numstat_block = parse_numstat_block_fixed
 
 if __name__ == '__main__':
-    print(sys.argv[1])
     try:
         result = main(sys.argv[1].strip('"'), ouputkind=None)[0]
     except:
         result = 0
     print(result)
+
+

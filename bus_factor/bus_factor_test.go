@@ -16,12 +16,10 @@ func printKeys(m any) {
 
 func TestMain(m *testing.M) {
 	pkgs := []string{  }
-
 	for _, pkg := range pkgs {
 		info := npm.Get_NpmInfo(pkg)
-	
 		if (info == nil) {
-			// fmt.Printf("Could not get npm registry info about the package %s\n", pkg)
+			fmt.Printf("Could not get npm registry info about the package %s\n", pkg)
 			fmt.Printf("Bus size:\t%3d\n", Get_minimum_bus_size(pkg))
 		} else {
 			printKeys(*info)

@@ -7,20 +7,18 @@ import (
 	"strings"
 )
 
-// uses the cloned repository to determine the bus size 
+// uses the cloned repository to determine the bus size.
 func Get_minimum_bus_size(git_path string) int {
 	// analyze the cloned repository at gitPath
 	repo_url := fmt.Sprintf("\"%s\"", git_path)
-	cmd := exec.Command("python", "bus_factor.py", repo_url)
+	cmd := exec.Command("python3", "bus_factor/bus_factor.py", repo_url)
 	output, err := cmd.Output()
-	// fmt.Println(string(output))
-	// fmt.Println(repo_url)
-
 	if (err != nil) {
 		return 0
 	}
 
 	// parse bus_size from python output
+	// fmt.Print(output)
 	outputLines := strings.Split(strings.TrimSpace(string(output)), "\r\n")
 	// fmt.Println(outputLines)
 	i, parseError := strconv.Atoi(outputLines[len(outputLines) - 1])

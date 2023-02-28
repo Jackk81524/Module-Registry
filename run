@@ -47,5 +47,6 @@ else
         echo '"build" command not ran, program not compiled yet'
         exit 1
     fi
+    chmod +x bus_factor/bus_factor.py
     ./main "$1"
 fi
