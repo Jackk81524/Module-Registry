@@ -36,7 +36,7 @@ func calculate_bus_factor(bus_size int) float32 {
 		return 0.0
 	}
 
-	return (float32(bus_size) - 0.75) / float32(bus_size)
+	return (float32(bus_size) - 0.9) / float32(bus_size)
 }
 
 // calculates the bus factor by cloning the repo locally then using the truckfactor pyhton library
