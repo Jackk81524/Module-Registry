@@ -1,0 +1,622 @@
+openapi: 3.0.2
+info:
+  title: ECE 461 - Fall 2021 - Project 2
+  description: "API for ECE 461/Fall 2021/Project 2: A Trustworthy Module Registry"
+  termsOfService: http://swagger.io/terms/
+  contact:
+    name: Prof. Davis
+    url: http://davisjam.github.io
+    email: davisjam@purdue.edu
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 2.0.0
+servers:
+- url: /
+paths:
+  /packages:
+    summary: Query the registry.
+    description: |-
+      Search for packages satisfying the indicated query.
+
+      If you want to enumerate all packages, provide an array with a single PackageQuery whose name is "*".
+
+      The response is paginated; the response header includes the offset to use in the next query.
+    post:
+      summary: Get packages
+      description: Get any packages fitting the query.
+      operationId: packages_list
+      parameters:
+      - name: X_Authorization
+        in: header
+        description: ""
+        required: false
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/AuthenticationToken'
+      - name: offset
+        in: query
+        description: "Provide this for pagination. If not provided, returns the first\
+          \ page of results."
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/EnumerateOffset'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/PackageQuery'
+        required: true
+      responses:
+        "200":
+          description: List of packages
+          headers:
+            offset:
+              style: simple
+              explode: false
+              schema:
+                $ref: '#/components/schemas/EnumerateOffset'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PackageMetadata'
+                x-content-type: application/json
+              examples:
+                laurent_cats:
+                  value:
+                  - id: 1
+                    name: Zaza
+                    tag: cat
+                  - id: 2
+                    name: Tigresse
+                    tag: cat
+                  - id: 3
+                    name: Maki
+                    tag: cat
+                  - id: 4
+                    name: Toufik
+                    tag: cat
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /reset:
+    summary: Reset registry
+    delete:
+      operationId: registry_reset
+      parameters:
+      - name: X_Authorization
+        in: header
+        description: ""
+        required: false
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/AuthenticationToken'
+      responses:
+        "200":
+          description: Registry is reset.
+        "401":
+          description: You do not have permission to reset the registry.
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /package/{id}:
+    summary: Interact with the package with this ID
+    get:
+      description: Return this package.
+      operationId: package_retrieve
+      parameters:
+      - name: X_Authorization
+        in: header
+        description: ""
+        required: false
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/AuthenticationToken'
+      - name: id
+        in: path
+        description: ID of package to fetch
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/PackageID'
+      responses:
+        "200":
+          description: pet response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Package'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+    put:
+      summary: Update this version of the package.
+      description: |-
+        The name, version, and ID must match.
+
+        The package contents (from PackageData) will replace the previous contents.
+      operationId: package_update
+      parameters:
+      - name: X_Authorization
+        in: header
+        description: ""
+        required: false
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/AuthenticationToken'
+      - name: id
+        in: path
+        description: ""
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/PackageID'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Package'
+        required: true
+      responses:
+        "200":
+          description: Success.
+        "400":
+          description: Malformed request (e.g. no such package).
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+    delete:
+      summary: Delete this version of the package.
+      operationId: package_delete
+      parameters:
+      - name: X_Authorization
+        in: header
+        description: ""
+        required: false
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/AuthenticationToken'
+      - name: id
+        in: path
+        description: Package ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/PackageID'
+      responses:
+        "200":
+          description: Package is deleted.
+        "400":
+          description: No such package.
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /package:
+    summary: Create a version of a package
+    description: "The \"ID\" field in the request body allows the user to use their\
+      \ own ID scheme. If this ID is already in use, the system chooses a new ID and\
+      \ indicates this in the response body."
+    post:
+      operationId: package_create
+      parameters:
+      - name: X_Authorization
+        in: header
+        description: ""
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/AuthenticationToken'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Package'
+        required: true
+      responses:
+        "201":
+          description: Success. Check the ID in the returned metadata for the official
+            ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageMetadata'
+        "400":
+          description: Malformed request.
+        "403":
+          description: Package exists already.
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /package/{id}/rate:
+    summary: Get the rating for this package.
+    get:
+      operationId: package_rate
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/PackageID'
+      - name: X_Authorization
+        in: header
+        description: ""
+        required: false
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/AuthenticationToken'
+      responses:
+        "200":
+          description: Rating. Only use this if each metric was computed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageRating'
+        "400":
+          description: No such package.
+        "500":
+          description: The package rating system choked on at least one of the metrics.
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /authenticate:
+    summary: Authenticate this user -- get an access token.
+    description: |-
+      If your system supports the authentication scheme described in the spec, then:
+
+      1. The obtained token should be provided to the other endpoints via the "X-Authorization" header.
+      2. The "Authorization" header is *required* in your system.
+
+      Otherwise, this endpoint should return HTTP 501 "Not implemented", and the "X-Authorization" header should be unused for the other endpoints.
+    put:
+      operationId: create_auth_token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticationRequest'
+        required: true
+      responses:
+        "200":
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationToken'
+        "401":
+          description: Authentication failed (e.g. no such user or invalid password)
+        "501":
+          description: This system does not support authentication.
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+  /package/byName/{name}:
+    summary: Interact with the package with this name
+    get:
+      description: Return the history of this package (all versions).
+      operationId: package_by_name_get
+      parameters:
+      - name: name
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/PackageName'
+      - name: X_Authorization
+        in: header
+        description: ""
+        required: false
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/AuthenticationToken'
+      responses:
+        "200":
+          description: Package history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PackageHistoryEntry'
+                x-content-type: application/json
+              examples:
+                zaza:
+                  value:
+                    id: 1
+                    name: Zaza
+                    tag: cat
+        "400":
+          description: No such package.
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+    delete:
+      summary: Delete all versions of this package.
+      operationId: package_by_name_delete
+      parameters:
+      - name: X_Authorization
+        in: header
+        description: ""
+        required: false
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/AuthenticationToken'
+      - name: name
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/PackageName'
+      responses:
+        "200":
+          description: Package is deleted.
+        "400":
+          description: No such package.
+      x-openapi-router-controller: swagger_server.controllers.default_controller
+components:
+  schemas:
+    Error:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    Package:
+      required:
+      - data
+      - metadata
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/PackageMetadata'
+        data:
+          $ref: '#/components/schemas/PackageData'
+      example:
+        metadata:
+          Version: 1.2.3
+          ID: ID
+          Name: Name
+        data:
+          Content: Content
+          JSProgram: JSProgram
+          URL: URL
+    PackageMetadata:
+      required:
+      - ID
+      - Name
+      - Version
+      type: object
+      properties:
+        Name:
+          $ref: '#/components/schemas/PackageName'
+        Version:
+          type: string
+          description: Package version
+          example: 1.2.3
+        ID:
+          $ref: '#/components/schemas/PackageID'
+      description: |-
+        The "Name" and "Version" are used as a unique identifier pair when uploading a package.
+
+        The "ID" is used as an internal identifier for interacting with existing packages.
+      example:
+        Version: 1.2.3
+        ID: ID
+        Name: Name
+    PackageData:
+      type: object
+      properties:
+        Content:
+          type: string
+          description: |-
+            Package contents. This is the zip file uploaded by the user. (Encoded as text using a Base64 encoding).
+
+            This will be a zipped version of an npm package's GitHub repository, minus the ".git/" directory." It will, for example, include the "package.json" file that can be used to retrieve the project homepage.
+
+            See https://docs.npmjs.com/cli/v7/configuring-npm/package-json#homepage.
+        URL:
+          type: string
+          description: Package URL (for use in public ingest).
+        JSProgram:
+          type: string
+          description: A JavaScript program (for use with sensitive modules).
+      description: |-
+        This is a "union" type.
+        - On package upload, either Content or URL should be set.
+        - On package update, exactly one field should be set.
+        - On download, the Content field should be set.
+      example:
+        Content: Content
+        JSProgram: JSProgram
+        URL: URL
+    User:
+      required:
+      - isAdmin
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: ""
+          example: Alfalfa
+        isAdmin:
+          type: boolean
+          description: Is this user an admin?
+      description: ""
+      example:
+        name: Alfalfa
+        isAdmin: true
+    UserAuthenticationInfo:
+      required:
+      - password
+      type: object
+      properties:
+        password:
+          type: string
+          description: "Password for a user. Per the spec, this should be a \"strong\"\
+            \ password."
+      description: Authentication info for a user
+    PackageID:
+      type: string
+      description: ""
+    PackageRating:
+      required:
+      - BusFactor
+      - Correctness
+      - GoodPinningPractice
+      - LicenseScore
+      - RampUp
+      - ResponsiveMaintainer
+      type: object
+      properties:
+        BusFactor:
+          type: number
+          description: ""
+          format: double
+        Correctness:
+          type: number
+          description: ""
+          format: double
+        RampUp:
+          type: number
+          description: ""
+          format: double
+        ResponsiveMaintainer:
+          type: number
+          description: ""
+          format: double
+        LicenseScore:
+          type: number
+          description: ""
+          format: double
+        GoodPinningPractice:
+          type: number
+          description: "The fraction of its dependencies that are pinned to at least\
+            \ a specific major+minor version, e.g. version 2.3.X of a package. (If\
+            \ there are zero dependencies, they should receive a 1.0 rating. If there\
+            \ are two dependencies, one pinned to this degree, then they should receive\
+            \ a Â½ = 0.5 rating)."
+          format: double
+      description: |-
+        Package rating (cf. Project 1).
+
+        If the Project 1 that you inherited does not support one or more of the original properties, denote this with the value "-1".
+      example:
+        GoodPinningPractice: 2.3021358869347654518833223846741020679473876953125
+        ResponsiveMaintainer: 5.962133916683182377482808078639209270477294921875
+        LicenseScore: 5.63737665663332876420099637471139430999755859375
+        RampUp: 1.46581298050294517310021547018550336360931396484375
+        BusFactor: 0.80082819046101150206595775671303272247314453125
+        Correctness: 6.02745618307040320615897144307382404804229736328125
+    PackageHistoryEntry:
+      required:
+      - Action
+      - Date
+      - PackageMetadata
+      - User
+      type: object
+      properties:
+        User:
+          $ref: '#/components/schemas/User'
+        Date:
+          type: string
+          description: Date of activity.
+          format: date-time
+        PackageMetadata:
+          $ref: '#/components/schemas/PackageMetadata'
+        Action:
+          type: string
+          description: ""
+          enum:
+          - CREATE
+          - UPDATE
+          - DOWNLOAD
+          - RATE
+      description: One entry of the history of this package.
+      example:
+        Action: CREATE
+        User:
+          name: Alfalfa
+          isAdmin: true
+        PackageMetadata:
+          Version: 1.2.3
+          ID: ID
+          Name: Name
+        Date: 2000-01-23T04:56:07.000+00:00
+    PackageName:
+      type: string
+      description: |-
+        Name of a package.
+
+        - Names should only use typical "keyboard" characters.
+        - The name "*" is reserved. See the `/packages` API for its meaning.
+    AuthenticationToken:
+      type: string
+      description: "The spec permits you to use any token format you like. You could,\
+        \ for example, look into JSON Web Tokens (\"JWT\", pronounced \"jots\"): https://jwt.io."
+    AuthenticationRequest:
+      required:
+      - Secret
+      - User
+      type: object
+      properties:
+        User:
+          $ref: '#/components/schemas/User'
+        Secret:
+          $ref: '#/components/schemas/UserAuthenticationInfo'
+      description: ""
+    SemverRange:
+      type: string
+      description: ""
+      example: |-
+        Exact (1.2.3)
+        Bounded range (1.2.3-2.1.0)
+        Carat (^1.2.3)
+        Tilde (~1.2.0)
+    PackageQuery:
+      required:
+      - Name
+      type: object
+      properties:
+        Version:
+          $ref: '#/components/schemas/SemverRange'
+        Name:
+          $ref: '#/components/schemas/PackageName'
+      description: ""
+    EnumerateOffset:
+      type: string
+      description: Offset in pagination.
+      example: "1"
+  securitySchemes:
+    UserAndPasswordYieldsToken:
+      type: apiKey
+      description: Use the /authentication endpoint to obtain an authorization token.
+      name: X-Authorization
+      in: header
+      x-apikeyInfoFunc: swagger_server.controllers.authorization_controller.check_UserAndPasswordYieldsToken
+
