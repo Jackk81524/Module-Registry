@@ -1,6 +1,3 @@
-import requests
+from components_API import PackageName
 
-BASE = 'http://127.0.0.1:5000/'
-
-response = requests.get(BASE + "packages")
-print(response.json())
+ver = PackageName("*7")
