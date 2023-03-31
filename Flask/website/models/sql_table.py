@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-class Packages(db.Model):
+class Packages_table(db.Model):
     ID = db.Column(db.Integer, primary_key=True, nullable=False)
     name = db.Column(db.String(214), unique=True, nullable=True)
     version = db.Column(db.String(50), nullable=True)
