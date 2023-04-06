@@ -36,15 +36,15 @@ class Error:
         
 
 class PackageMetadata:
-    def __init__(self,Name,Version):
+    def __init__(self,Name,Version,ID):
         self.Name = PackageName(Name)
         self.Version = SemverRange(Version)
         self.ID = ID
     
-    def jsonify(self):
+    def to_dict(self):
         resource_fields = {
-            'Version': self.Version,
-            'Name': self.Name
+            'Version': self.Version.Version,
+            'Name': self.Name.Name
         }
         return resource_fields
 
@@ -87,7 +87,7 @@ class PackageName:
 
 class EnumerateOffset:
     def __init__(self,request):
-        self.offset = str(request.args.get('offset',default = 0, type = int))
+        self.offset = str(request.args.get('offset',default = 1, type = int))
 
 
 class Package:
