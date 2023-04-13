@@ -41,11 +41,13 @@ class PackageMetadata:
         self.Version = SemverRange(Version)
         self.ID = ID
     
-    def to_dict(self):
+    def to_dict(self,ID = False):
         resource_fields = {
             'Version': self.Version.Version,
             'Name': self.Name.Name
         }
+        if ID == True:
+            resource_fields["ID"] = self.ID
         return resource_fields
 
 class PackageID:

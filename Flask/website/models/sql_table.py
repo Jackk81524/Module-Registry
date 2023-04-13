@@ -18,7 +18,7 @@ class Packages_table(db.Model):
     NETSCORE = db.Column(db.Float, nullable=True)
 
 def add_package(NAME):
-    new_package = Packages_table(ID=31,NAME = NAME,VERSION = "v1.1.2",NETSCORE = 1.1)
+    new_package = Packages_table(ID=31,NAME = NAME,VERSION = "1.1.2",NETSCORE = 1.1)
     db.session.add(new_package)
     db.session.commit()
 
@@ -30,6 +30,27 @@ def query_package(Query):
     else:
         result = db.session.query(Packages_table).filter_by(NAME = Name,VERSION=Version).all()
     return result
+
+def query_byID(PackageID):
+    ID = PackageID.ID
+    return db.session.query(Packages_table).filter_by(ID = ID).all()
+
+def query_all_packages():
+    return db.session.query(Packages_table).all()
+
+def reset_all_packages():
+    db.session.query(Packages_table).delete()
+    db.session.commit()
+
+def reset_ID_packages(PackageID):
+    ID = PackageID.ID
+    db.session.query(Packages_table).filter_by(ID=ID).delete()
+    db.session.commit()
+
+def query_ratings(PackageID):
+    ID = PackageID.ID
+    return db.session.query(Packages_table).filter_by(ID=ID).all()
+
     
 
 

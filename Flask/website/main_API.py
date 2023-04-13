@@ -1,6 +1,6 @@
 from flask import Flask, render_template, send_from_directory, request, make_response, jsonify, abort
 from flask_restful import Api, Resource, reqparse
-from website.models.sql_table import add_package, query_package
+from website.models.sql_table import *
 from website.components_API import *
 import json
 
@@ -13,13 +13,11 @@ class PackagesList(Resource):
         # Packages_list_args.add_argument("Name",type = str,help = "Name of package is required",required = True)
         # Packages_list_args.add_argument("Version",type = str,required = False)
         # args = Packages_list_args.parse_args()
-        abort(400,message = "Error here")
-        PackagesToQuery = request.json["packages"]
+        PackagesToQuery = request.json["PackageQuery"]
         offset = EnumerateOffset(request)
         output = {'value':[]}
         if(len(PackagesToQuery) == 1 and PackagesToQuery[0] == "*"):
-            ## Query all
-            i = 1
+            Queried = query_all_packages()
         else:
             for package in PackagesToQuery:
                 if 'Version' in package:
@@ -27,41 +25,37 @@ class PackagesList(Resource):
                 else:
                     Query = PackageQuery(package['Name'])
                 Queried = query_package(Query)
-                for data in Queried:
-                    QueriedMetaData = PackageMetadata(data.NAME,data.VERSION,data.ID)
-                    output['value'].append(QueriedMetaData.to_dict())
+        for data in Queried:
+            QueriedMetaData = PackageMetadata(data.NAME,data.VERSION,data.ID)
+            output['value'].append(QueriedMetaData.to_dict())
         return json.dumps(output), 200
 
 
 class RegistryReset(Resource):
     def delete(self):
-        ## Clear sql and buckets
-        del packages['lodash']
-        print({'data' : 'here'})
-        return '', 204
-        # return(make_response(jsonify({'message':'Registry is Reset'})),200)
+        reset_all_packages()
+        return make_response(jsonify({'description': 'Registry is reset.'}), 200)
 
 class Package(Resource):
     def get(self,id):
-        ## Get package info
-        request_type = 'get'
         ID = PackageID(id)
-        ## Retrieve info 
-        # Need to ask about format of packagedata union type
-        # data = PackageData(insert info)
-        # package = Package(Name,Version,data)
-        return {'test' : id}
-    def put(self,id):
-        ID = PackageID(id)
-        Packages_update_args = MetaData_reqparse()
-        ## One more field, but need to ask about package data
-        args = Packages_update_args.parse_args()
-        ## Name, Version, and ID must match, update package contents
-        return {"description" : "Version is updated"}
+        Info = query_byID(ID)[0]
+        MetaData = PackageMetadata(Info.NAME,Info.VERSION,Info.ID) 
+        ## Need Package Data
+        return make_response(jsonify({'value' : {'metadata' : MetaData.to_dict(ID=True)}}),200)
+
+    # Need to access buckets to update     
+    # def put(self,id):
+    #     ID = PackageID(id)
+    #     Packages_update_args = MetaData_reqparse()
+    #     ## One more field, but need to ask about package data
+    #     args = Packages_update_args.parse_args()
+    #     ## Name, Version, and ID must match, update package contents
+    #     return {"description" : "Version is updated"}
     def delete(self,id):
         ID = PackageID(id)
-        ## Delete package with this id
-        return {'description' : 'Package is deleted'}
+        reset_ID_packages(ID)
+        return make_response(jsonify({'description': 'Package is deleted.'}), 200)
 
 
 class PackageCreate(Resource):

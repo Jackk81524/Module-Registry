@@ -10,8 +10,13 @@ import requests
 def getconn():
     with Connector() as connector:
         conn = connector.connect(
-           ## get from sql into doc, need to configure to env file
-
+            ## get from sql into doc, need to configure to env file
+            "module-registry-ece461:us-central1:ece461-module-registry",
+            "pymysql",
+            user="461-user",
+            password="461-test",
+            db="Module-Registry",
+            ip_type= IPTypes.PUBLIC 
         )
         return conn
 
