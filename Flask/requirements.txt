@@ -1,0 +1,17 @@
+# https://pypi.org/project/Flask
+Flask==2.2.3
+
+# https://pypi.org/project/Flask-RESTful
+Flask-RESTful==0.3.9
+
+# https://pypi.org/project/pymysql
+pymysql==1.0.3
+
+# https://pypi.org/project/Flask-SQLAlchemy
+Flask-SQLAlchemy==3.0.3
+
+# https://pypi.org/project/gunicorn
+gunicorn==20.1.0
+
+# https://pypi.org/project/cloud-sql-python-connector
+cloud-sql-python-connector==1.2.2
