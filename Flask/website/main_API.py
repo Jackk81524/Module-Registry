@@ -3,16 +3,13 @@ from flask_restful import Api, Resource, reqparse
 from website.models.sql_table import *
 from website.components_API import *
 import json
+import base64
 
 
 packages = {"lodash" : ["lodash","v2.2.2"]}
 
 class PackagesList(Resource):
     def post(self):
-        # Packages_list_args = reqparse.RequestParser()
-        # Packages_list_args.add_argument("Name",type = str,help = "Name of package is required",required = True)
-        # Packages_list_args.add_argument("Version",type = str,required = False)
-        # args = Packages_list_args.parse_args()
         PackagesToQuery = request.json["PackageQuery"]
         offset = EnumerateOffset(request)
         output = {'value':[]}
@@ -60,10 +57,13 @@ class Package(Resource):
 
 class PackageCreate(Resource):
     def post(self):
-        args = MetaData_reqparse()
-        ## Create package in regsiry based on input
-        ## Need to update packagedata'
-        return {'description' : 'Success. Check the ID in the returned metadata for the official ID.'}
+        if "URL" in request.json and request.json["URL"] != None:
+            ## Handle URL
+            return make_response(jsonify({'description': 'URL success.'}), 200)
+        elif "ZipFile" in request.json and request.json["ZipFile"] != None:
+            return make_response(jsonify({'Content': request.json["ZipFile"]}), 200)
+
+        return {'description' : 'Not as expected'}
 
 
 class PackageRate(Resource):
