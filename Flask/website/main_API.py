@@ -38,7 +38,7 @@ class Package(Resource):
         ID = PackageID(id)
         Info = query_byID(ID)[0]
         MetaData = PackageMetadata(Info.NAME,Info.VERSION,Info.ID) 
-        ## Need Package Data
+        ## Need Package DataR
         return make_response(jsonify({'value' : {'metadata' : MetaData.to_dict(ID=True)}}),200)
 
     # Need to access buckets to update     

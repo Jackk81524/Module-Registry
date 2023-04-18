@@ -64,8 +64,8 @@ def RateID():
 
 @bp.get("/upload")
 def toUpload():
-    print("testing file")
-    return render_template('upload.html')
+    #print("testing file")
+    return render_template('mainPage.html')
     #return send_from_directory('templates','upload.html')
 
 @bp.route("/uploadContent", methods = ["POST"])
