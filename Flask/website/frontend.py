@@ -1,6 +1,6 @@
 from website.__init__ import create_app
 import json
-from flask import Blueprint, send_from_directory, request,jsonify
+from flask import Blueprint, send_from_directory, render_template,  request,jsonify
 from website.main_API import *
 import requests
 from flask_restful import abort
@@ -62,10 +62,11 @@ def RateID():
     data = requests.get(BASE + 'package/' + ID + "/rate")
     return data.json(), data.status_code
 
-@bp.route("/toUpload")
+@bp.route("/upload")
 def toUpload():
     print("")
-    return send_from_directory('templates','upload.html')
+    return render_template('upload.html')
+    #return send_from_directory('templates','upload.html')
 
 @bp.route("/uploadContent", methods = ["POST"])
 def handleUploaded():
