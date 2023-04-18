@@ -1,15 +1,56 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset = "utf-8" />
-        <meta name = "viewport" content = "width=device-width, initial-scale=1" />
-    </head>
-    <body>
-        <form method = "POST" action = "/uploadContent" enctype="multipart/form-data">
-            <label for="Upload">Enter Either a ZipFile or a URL</label>
-            <input type="text" id="URL" name="URL" label = "Enter a URL" /><br>
-            <input type="file" id="File" name="File" label = "Enter a ZipFile" /><br>
-            <input type = "submit" value = "Upload">
-        </form>
-    </body>
-</html>
+<!--<html>-->
+<!--    <head>-->
+<!--        <meta charset = "utf-8" />-->
+<!--        <meta name = "viewport" content = "width=device-width, initial-scale=1" />-->
+<!--    </head>-->
+<!--    <body>-->
+<!--        <form method = "POST" action = "/uploadContent" enctype="multipart/form-data">-->
+<!--            <label for="Upload">Enter Either a ZipFile or a URL</label>-->
+<!--            <input type="text" id="URL" name="URL" label = "Enter a URL" /><br>-->
+<!--            <input type="file" id="File" name="File" label = "Enter a ZipFile" /><br>-->
+<!--            <input type = "submit" value = "Upload">-->
+<!--        </form>-->
+<!--    </body>-->
+<!--</html>-->
+<HTML>
+<HEAD>
+<TITLE>Welcome to the Module Registry</TITLE>
+</HEAD>
+<BODY BGCOLOR="FFFFFF">
+<!--<CENTER><IMG SRC="clouds.jpg" ALIGN="BOTTOM"> </CENTER>-->
+<!--<HR>-->
+<!--<a href="http://somegreatsite.com">Link Name</a>-->
+<!--is a link to another nifty site-->
+<H1>Welcome to the Module Registry</H1>
+<H2>Please enter your login credentials below</H2>
+For support, email us at <a href="mailto:htharakr@purdue.edu">
+htharakr@purdue.edu</a>.
+<P> This page is the user authentication page
+<P> <B>Testing line1</B>
+<BR> <B><I>Testing line 2</I></B>
+<HR>
+</BODY>
+</HTML>
+
+<form method="post" enctype="multipart/form-data">
+  <input type="text" name="name" id="name" placeholder="Module Name" required />
+  <input type="file" name="image" accept="image/*" required />
+  <input type="submit" value="Submit Form" />
+</form>
+
+<script>
+  const formElem = document.querySelector('form');
+  formElem.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('name', e.target[0].value);
+    formData.append('file', e.target[1].files[0]);
+    const response = await fetch('/submitform', {
+      method: 'POST',
+      body: formData,
+    });
+    const data = await response.text();
+    return data;
+  });
+</script>
