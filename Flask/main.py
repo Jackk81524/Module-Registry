@@ -1,15 +1,16 @@
 from website import create_app
 from flask_restful import Api, Resource
-from flask import Flask, request
+from flask import Flask, request, render_template
 from website.frontend import bp
+import templates
 
 app = create_app()
 
 @app.get("/")
-def hello():
-    """Return a friendly HTTP greeting."""
-    who = request.args.get("who", default="World")
-    return f"Hello {who}!\n"
+def defaultPage():
+    return render_template('mainPage.html')
+
+
 
 if __name__ == "__main__":
     app.register_blueprint(bp)
