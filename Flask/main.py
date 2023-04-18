@@ -2,7 +2,6 @@ from website import create_app
 from flask_restful import Api, Resource
 from flask import Flask, request, render_template
 from website.frontend import bp
-import templates
 
 app = create_app()
 
