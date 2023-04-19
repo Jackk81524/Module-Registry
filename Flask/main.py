@@ -9,6 +9,11 @@ app = create_app()
 def defaultPage():
     return render_template('mainPage.html')
 
+@app.get("/upload")
+def uploadPage():
+    return render_template('upload.html')
+
+
 if __name__ == "__main__":
     app.register_blueprint(bp)
-    app.run(host="localhost", port=8080, debug=True)
+    app.run(host="localhost",port = 8080, debug=True)

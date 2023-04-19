@@ -62,10 +62,10 @@ def RateID():
     data = requests.get(BASE + 'package/' + ID + "/rate")
     return data.json(), data.status_code
 
-@bp.get("/upload")
-def toUpload():
+#@bp.get("/upload")
+#def toUpload():
     #print("testing file")
-    return render_template('mainPage.html')
+    #return render_template('mainPage.html')
     #return send_from_directory('templates','upload.html')
 
 @bp.route("/uploadContent", methods = ["POST"])

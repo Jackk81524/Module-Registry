@@ -15,14 +15,14 @@
 <!--</html>-->
 <HTML>
 <HEAD>
-<TITLE>Welcome to the Module Registry</TITLE>
+<TITLE>Welcome to the Upload Page</TITLE>
 </HEAD>
 <BODY BGCOLOR="FFFFFF">
 <!--<CENTER><IMG SRC="clouds.jpg" ALIGN="BOTTOM"> </CENTER>-->
 <!--<HR>-->
 <!--<a href="http://somegreatsite.com">Link Name</a>-->
 <!--is a link to another nifty site-->
-<H1>Welcome to the Module Registry</H1>
+<H1>Welcome to the Upload Page</H1>
 <H2>Please enter your login credentials below</H2>
 For support, email us at <a href="mailto:htharakr@purdue.edu">
 htharakr@purdue.edu</a>.
@@ -33,24 +33,24 @@ htharakr@purdue.edu</a>.
 </BODY>
 </HTML>
 
-<!--<form method="post" enctype="multipart/form-data">-->
-<!--  <input type="text" name="name" id="name" placeholder="Module Name" required />-->
-<!--  <input type="file" name="image" accept="image/*" required />-->
-<!--  <input type="submit" value="Submit Form" />-->
-<!--</form>-->
+<form method="post" enctype="multipart/form-data">
+  <input type="text" name="name" id="name" placeholder="Module Name" required />
+  <input type="file" name="image" accept="image/*" required />
+  <input type="submit" value="Submit Form" />
+</form>
 
-<!--<script>-->
-<!--  const formElem = document.querySelector('form');-->
-<!--  formElem.addEventListener('submit', async (e) => {-->
-<!--    e.preventDefault();-->
-<!--    const formData = new FormData();-->
-<!--    formData.append('name', e.target[0].value);-->
-<!--    formData.append('file', e.target[1].files[0]);-->
-<!--    const response = await fetch('/submitform', {-->
-<!--      method: 'POST',-->
-<!--      body: formData,-->
-<!--    });-->
-<!--    const data = await response.text();-->
-<!--    return data;-->
-<!--  });-->
-<!--</script>-->
+<script>
+  const formElem = document.querySelector('form');
+  formElem.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('name', e.target[0].value);
+    formData.append('file', e.target[1].files[0]);
+    const response = await fetch('/submitform', {
+      method: 'POST',
+      body: formData,
+    });
+    const data = await response.text();
+    return data;
+  });
+</script>
