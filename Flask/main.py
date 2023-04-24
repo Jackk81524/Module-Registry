@@ -6,7 +6,40 @@ import requests
 from flask_restful import abort
 import json
 #import datetime
-#from google.cloud import storage
+
+# Testing New Feature
+from google.cloud import storage
+from oauth2client.service_account import ServiceAccountCredentials
+import os
+
+with open('pKey.json', 'r') as pKey:
+    data = pKey.read()
+
+obj = json.loads(data)
+
+# credentials_dict = {
+#     'type': 'service_account',
+#     'client_id': os.environ['BACKUP_CLIENT_ID'],
+#     'client_email': os.environ['BACKUP_CLIENT_EMAIL'],
+#     'private_key_id': os.environ['BACKUP_PRIVATE_KEY_ID'],
+#     'private_key': os.environ['BACKUP_PRIVATE_KEY'],
+# }
+
+# credentials_dict = {
+#     'type': 'service_account',
+#     'client_id': '102375219002406842397',
+#     'client_email': 'gcs-uploader@module-registry-ece461.iam.gserviceaccount.com',
+#     'private_key_id': '496881a5a8eb3803a3acef26c6d04b2040d6c20f',
+#     'private_key': "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCdeBZnl3dOJP+h\nt+ElDAO8JGsdAmcJg32hT6AAy9aXiyJ9wCrePA3ASUQPJ0Nf1ZvEcsZPU31WvciM\nGqnGFc/mxwYB6NUr2ps8kXtD7OglEXwUvM05yYRdUl9P25Ln/JeGBj55HRsb4Wqb\n7IVR1KQL2YTkPHALNXghLeq46JR5hKEVOH/iMLPVYGWGxs1K87jFJDEuZD0z5Bos\njR7kkXH+7wf1ZCsQNFKyALojdsnU/uKruTpfeaRQgYGBRs8IMoaTJvQ/m5tW3ZhU\nxeIzpIQKS2+BH6eTZoqLSzR7eR3WL4XkmihI4iBmBjYfDeMitTFP7UKHvwzL47oG\n8xZ0k7g1AgMBAAECggEAFsd+8jhijV7jzfikLLBKwAZCqn0k+6bWXyX+Hu9d2SlK\n8YcBjImCcb0Hh+ulnvDvKiFyV5pbyNcGcmIPCjUwkJFc6JzObZwflcjz3HUide5M\nFVHknEXvDHL0j8BTRZTwNHalxe50c/mNawXxmU9Z9c7fHwcxLCXtfVs/l8UpaVSQ\nvYyHQffnHak9zFrQa/kDx2n+D8nt6ngxRoFO4qjD5Ew2iEvhZIi+E16pJ8yN/gje\n2ceWxqPhK3uUpzrY8htMp3V6JURZ1aIz6uADJjHDPywRPhA6pFwwSVndvEXxxXw6\n4EmhpU6nFX68SK7YufxjgmcGimssa/OsCXcp0AUGAQKBgQDOutHujlkERp84aASB\nEYZdnM1ZlO/oM1IP5yWQpocDfU+QbGh8MUQA2uGh0OwBQoLb7kkRNk/uEnAMs4tX\nbTp2PvQo5qcZINYPOafxHU+xg0+aVOitiYQ8Oe0Z0PiWv/i8OSmm+l0a7O1pAwT9\n1OYmJG62zv06Kyv00sOicJzNNQKBgQDC/7tEZYnch3DRKNdrg0gSafnHF9db+MAP\nTUKUCQsvtasAcGLNOWvlH8CqYbLSHYMXNSgaMe9E+6JxsJ+OGZQXpzcH6/Hmbq4n\nqgtuQMutQG4xHRuCYwZZx4qMZeWHym4946VFNrHxhwkCsuHhDjbNT+gZ64DKdME4\nu0nXRdefAQKBgB2itIOhTmuJgDvC1Zp3G68B0oJcEoRUDxiOh1kUNliutyA6GkRr\nf5cryZq764lGsqG6qCjag1zasctwVbJjyzS2U6QlZKD6jxVBq6yqCgmljFzQfUab\nZySHHVFNHsXloU/CVhFE5OH+Qw6By05kHdYr9N8qDy0ukS+Yo0j/IctdAoGAed0S\nLnt6fbyTL9PjVMh1uTRLqjXnHA5IEQgKrLM+L3HMTXju9iyFlmqSoKhv9coFy/In\nfr9oNedArOZhwI+RsnqI9MVqpsTSx+0IOb36y+pxMvZq48B5DpCasIVZvdQvszPa\nbHfzGut2IR6j9V9JtmPSvKgmE+CFhKvfSM7YIwECgYEArnmUz8vu/QTia1sE+vFK\nqk5mTP4gRkNQDN1LLsFvtmrYxhnXWlR0N1NkHjCDAcie2w+5m8yMzwB6AKhNGCSH\nOMFQVA5KMlCuWoIwHZoOkw3kuB6AoDMezpDSlKH2tREz7EmOY2r45tXDb+AiTJR7\nQQ6e1sUYqpYeUKJB54nIah4=\n-----END PRIVATE KEY-----\n"
+# }
+
+#credentials = ServiceAccountCredentials.from_json_keyfile_dict(credentials_dict)
+
+client = storage.Client.from_service_account_json('pKey.json')
+bucket = client.get_bucket('bucket-proto1')
+blob = bucket.blob('myfile')
+blob.upload_from_filename('main.py')
+
 
 
 app = create_app()
