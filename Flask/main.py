@@ -2,8 +2,8 @@ from website import create_app
 from flask_restful import Api, Resource
 from flask import Flask, request, render_template
 from website.frontend import bp
-import datetime
-from google.cloud import storage
+#import datetime
+#from google.cloud import storage
 
 
 app = create_app()
