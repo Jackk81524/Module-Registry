@@ -12,8 +12,8 @@ app = create_app()
 def defaultPage():
     return render_template('mainPage.html')
 
-@app.get("/upload")
-def uploadPage():
+#@app.get("/upload")
+#def uploadPage():
     #
     # storage_client = storage.Client()
     # policy = storage_client.generate_signed_post_policy_v4(
@@ -40,7 +40,7 @@ def uploadPage():
     # print(form)
     #
     # return form
-    return render_template('upload.html')
+    #return render_template('upload.html')
 
 
 if __name__ == "__main__":
