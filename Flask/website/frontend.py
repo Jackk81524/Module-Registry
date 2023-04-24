@@ -73,7 +73,7 @@ def handleUploaded():
     URL = request.form.get("URL")
     ZipFile = request.files.get("File")
     headers = {'Content-Type': 'application/json'}
-    if len(URL) != 0 and ZipFile != "":
+    if len(URL) != 0 and ZipFile.read() != b"":
         abort(400)
     elif URL != "":
         response = requests.post(BASE + 'package',json = {'URL' : URL,'ZipFile' : None},headers = headers)
