@@ -91,7 +91,7 @@ def deleteID():
 def getRateID():
     return send_from_directory('templates','rateID.html')
 
-@app.route("/packageIDDelete",methods=["POST","DELETE"])
+@app.route("/packageIDRate",methods=["POST","DELETE"])
 def RateID():
     ID = request.form.get("Rate")
     data = requests.get(BASE + 'package/' + ID + "/rate")
