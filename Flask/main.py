@@ -4,7 +4,6 @@ from flask import Flask, request, render_template
 from website.frontend import bp
 
 app = create_app()
-app.register_blueprint(bp)
 
 @app.get("/")
 def defaultPage():
