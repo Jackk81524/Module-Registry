@@ -4,14 +4,15 @@ from flask import Flask, request, render_template
 from website.frontend import bp
 
 app = create_app()
+app.register_blueprint(bp)
 
 @app.get("/")
 def defaultPage():
     return render_template('mainPage.html')
 
-@app.get("/upload")
-def uploadPage():
-    return render_template('upload.html')
+# @app.get("/upload")
+# def uploadPage():
+#     return render_template('upload.html')
 
 
 if __name__ == "__main__":
