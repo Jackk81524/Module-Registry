@@ -19,9 +19,12 @@ cloud-sql-python-connector==1.2.2
 # https://pypi.org/project/google-cloud/
 google-cloud==0.34.0
 
-# Decouple import Config
+# https://pypi.org/project/python-decouple/
+python-decouple==3.8
 
-# storage from google.cloud
+# https://pypi.org/project/google-oauth/
+google-oauth==1.0.1
 
-#service_account from oauth
+
+
 
