@@ -1,3 +1,4 @@
+
 package correctiveness
 
 import (
@@ -8,12 +9,12 @@ import (
 	"github.com/KevinMi2023p/ECE461_TEAM33/responsiveness"
 )
 
-func calculateCorrectnessScore(issues *[]responsiveness.RepoIssue) float64 {
+func Correctiveness(issues *[]responsiveness.RepoIssue) float32 {
 	if issues == nil {
 		return 0
 	}
-	var openedIssues []map[string]interface{}
-	var closedIssues []map[string]interface{}
+	open_issue_count := 0
+	closed_issue_count := 0
 
 	for _, issue := range *issues {
 		// check whether the issue is open
@@ -37,20 +38,14 @@ func calculateCorrectnessScore(issues *[]responsiveness.RepoIssue) float64 {
 			// if this state is "open" and made in the past month
 			if state != nil {
 				if state == "open" && duration < (30*24*time.Hour) {
-					i = len(labels)
-					openedIssues = append(openedIssues, map[string]interface{}{
-						"created_at": issuetime,
-						"closed_at":  nil,
-					})
+					i = len(*issues)
+					open_issue_count += 1
 
 					// check whether the issue is no longer open and made in the past month
 					state := npm.Get_value_from_info(issue, "state")
 					if state != nil {
 						if state != "open" && duration < (30*24*time.Hour) {
-							closedIssues = append(closedIssues, map[string]interface{}{
-								"created_at": issuetime,
-								"closed_at":  npm.Get_value_from_info(issue, "closed_at"),
-							})
+							closed_issue_count += 1
 						}
 					}
 				}
@@ -58,34 +53,9 @@ func calculateCorrectnessScore(issues *[]responsiveness.RepoIssue) float64 {
 		}
 	}
 
-	// Calculate the correctness score using the opened and closed issues.
-	return calculateCorrectnessScoreFromIssues(openedIssues, closedIssues)
+	if closed_issue_count+open_issue_count > 0 {
+		return float32(float32(open_issue_count) / float32(open_issue_count+closed_issue_count))
+	}
+
+	return 0.5
 }
-
-func calculateCorrectnessScoreFromIssues(openedIssues []map[string]interface{}, closedIssues []map[string]interface{}) float64 {
-	// Calculate the total duration of all opened issues.
-	var totalOpenDuration float64
-	for _, issue := range openedIssues {
-		createdTime, _ := time.Parse(time.RFC3339, issue["created_at"].(string))
-		closedTime := time.Now().UTC()
-		if issue["closed_at"] != nil {
-			closedTime, _ = time.Parse(time.RFC3339, issue["closed_at"].(string))
-		}
-		duration := closedTime.Sub(createdTime).Hours()
-		totalOpenDuration += duration
-	}
-
-	// Calculate the total duration of all closed issues.
-	var totalClosedDuration float64
-	for _, issue := range closedIssues {
-		createdTime, _ := time.Parse(time.RFC3339, issue["created_at"].(string))
-		closedTime, _ := time.Parse(time.RFC3339, issue["closed_at"].(string))
-		duration := closedTime.Sub(createdTime).Hours()
-		totalClosedDuration += duration
-	}
-
-	// Calculate the average duration of opened and closed issues.
-	var avgOpenDuration float64
-	if len(openedIssues) > 0 {
-		avgOpen
-	}
