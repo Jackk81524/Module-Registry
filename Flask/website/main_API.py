@@ -58,9 +58,11 @@ class Package(Resource):
 class PackageCreate(Resource):
     def post(self):
         if "URL" in request.json and request.json["URL"] != None:
-            ## Handle URL
+            ratings = rate_Package(request.json["URL"])
+            ## Need name and version
             return make_response(jsonify({'description': 'URL success.'}), 200)
         elif "ZipFile" in request.json and request.json["ZipFile"] != None:
+            ## Need name version and url
             return make_response(jsonify({'Content': request.json["ZipFile"]}), 200)
 
         return {'description' : 'Not as expected'}
