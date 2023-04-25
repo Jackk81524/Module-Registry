@@ -57,6 +57,7 @@ class Package(Resource):
 
 class PackageCreate(Resource):
     def post(self):
+        print("here")
         if "URL" in request.json and request.json["URL"] != None:
             ratings = rate_Package(request.json["URL"])
             ## Need name and version

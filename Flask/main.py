@@ -5,17 +5,20 @@ from website.frontend import bp
 import requests
 from flask_restful import abort
 import json
-
+from google.cloud import storage
 import os
-client = storage.Client.from_service_account_json('pKey.json')
-bucket = client.get_bucket('bucket-proto1')
-blob = bucket.blob('myfile')
-blob.upload_from_filename('main.py')
+import base64
+import zipfile
+# client = storage.Client.from_service_account_json('pKey.json')
+# bucket = client.get_bucket('bucket-proto1')
+# blob = bucket.blob('myfile')
+# blob.upload_from_filename('main.py')
 
 
 
 app = create_app()
 BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/' 
+BASE = 'http://localhost:8000/'
 @app.route("/")
 def defaultPage():
     return render_template('mainPage.html')
@@ -91,12 +94,20 @@ def handleUploaded():
     if len(URL) != 0 and ZipFile.read() != b"":
         abort(400)
     elif URL != "":
-        response = requests.post(BASE + 'package',json = {'URL' : URL,'ZipFile' : None},headers = headers)
+        response = requests.post(BASE + 'package',json = jsonify({'URL' : URL,'ZipFile' : None}),headers = headers)
     elif ZipFile != None:
+        Zip2 = ZipFile
+        with zipfile.ZipFile(ZipFile, mode="r") as archive:
+            for info in archive.infolist():
+                print(info.filename)
+                if info.filename.endswith('.json'):
+                    print('Match: ', info.filename)
+                    archive.extract(info.filename, info.filename)
         ZipFile_string = base64.b64encode(ZipFile.read()).decode('utf-8')
-        response = requests.post(BASE + 'package',json = {'URL' : None,'ZipFile' : ZipFile_string},headers = headers)
+        response = requests.post(BASE + 'package',json = {'URL' : None,'ZipFile' : Zip2},headers = headers)
     else:
         abort(501)
+    print(response.content)
     return response.json(), response.status_code
 
 
