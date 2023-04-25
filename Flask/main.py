@@ -11,6 +11,8 @@ import json
 #import datetime
 from google.cloud import storage
 from google.oauth2 import service_account
+import base64
+import zipfile
 
 #Private Key Grab and Authentication
 pKey = config('P_KEY')
@@ -26,7 +28,8 @@ blob.upload_from_filename('main.py')
 
 
 app = create_app()
-BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/' 
+BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/'
+BASE = 'http://localhost:8000/'
 @app.route("/")
 def defaultPage():
     return render_template('mainPage.html')
@@ -104,6 +107,13 @@ def handleUploaded():
     elif URL != "":
         response = requests.post(BASE + 'package',json = {'URL' : URL,'ZipFile' : None},headers = headers)
     elif ZipFile != None:
+        Zip2 = ZipFile
+        with zipfile.ZipFile(ZipFile, mode="r") as archive:
+            for info in archive.infolist():
+                print(info.filename)
+                if info.filename.endswith('.json'):
+                    print('Match: ', info.filename)
+                    archive.extract(info.filename, info.filename)
         ZipFile_string = base64.b64encode(ZipFile.read()).decode('utf-8')
         response = requests.post(BASE + 'package',json = {'URL' : None,'ZipFile' : ZipFile_string},headers = headers)
     else:
@@ -113,4 +123,4 @@ def handleUploaded():
 
 if __name__ == "__main__":
     # app.register_blueprint(bp)
-    app.run(host="localhost",port = 8080, debug=True)
+    app.run(host="localhost",port = 8000, debug=True)
