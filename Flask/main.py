@@ -7,6 +7,7 @@ from flask_restful import abort
 import json
 
 import os
+<<<<<<< HEAD
 
 # # Testing New Feature
 from google.cloud import storage
@@ -40,6 +41,12 @@ from google.cloud import storage
 # bucket = client.get_bucket('bucket-proto1')
 # blob = bucket.blob('myfile')
 # blob.upload_from_filename('main.py')
+=======
+client = storage.Client.from_service_account_json('pKey.json')
+bucket = client.get_bucket('bucket-proto1')
+blob = bucket.blob('myfile')
+blob.upload_from_filename('main.py')
+>>>>>>> 1845f63aa696fa3fa0011eff52d3241d45a5070e
 
 
 
@@ -52,32 +59,7 @@ def defaultPage():
 @app.route("/upload")
 def uploadPage():
     return render_template('upload.html')
-    #
-    # storage_client = storage.Client()
-    # policy = storage_client.generate_signed_post_policy_v4(
-    #     "bucket-proto1",
-    #     "blob_name2",
-    #     expiration=datetime.timedelta(minutes=10),
-    #     fields={
-    #         'x-goog-meta-test': 'data'
-    #     }
-    # )
-    #
-    # # Create an HTML form with the provided policy
-    # header = "<form action='{}' method='POST' enctype='multipart/form-data'>\n"
-    # form = header.format(policy["url"])
-    #
-    # # Include all fields returned in the HTML form as they're required
-    # for key, value in policy["fields"].items():
-    #     form += f"  <input name='{key}' value='{value}' type='hidden'/>\n"
-    #
-    # form += "  <input type='file' name='file'/><br />\n"
-    # form += "  <input type='submit' value='Upload File' /><br />\n"
-    # form += "</form>"
-    #
-    # print(form)
-    #
-    # return form
+
 
 @app.route("/packagesListInput")
 def packagesListInput():
