@@ -22,8 +22,8 @@ google-cloud==0.34.0
 # https://pypi.org/project/python-decouple/
 python-decouple==3.8
 
-# https://pypi.org/project/google-oauth/
-google-oauth==1.0.1
+# https://pypi.org/project/oauth2client/
+oauth2client==4.1.3
 
 
 
