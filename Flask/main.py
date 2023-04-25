@@ -5,17 +5,18 @@ from website.frontend import bp
 import requests
 from flask_restful import abort
 import json
-#import datetime
 
-# Testing New Feature
-from google.cloud import storage
-from oauth2client.service_account import ServiceAccountCredentials
 import os
 
-with open('pKey.json', 'r') as pKey:
-    data = pKey.read()
+# # Testing New Feature
+from google.cloud import storage
+# # from oauth2client.service_account import ServiceAccountCredentials
+# import os
 
-obj = json.loads(data)
+# with open('pKey.json', 'r') as pKey:
+#     data = pKey.read()
+
+# obj = json.loads(data)
 
 # credentials_dict = {
 #     'type': 'service_account',
@@ -35,10 +36,10 @@ obj = json.loads(data)
 
 #credentials = ServiceAccountCredentials.from_json_keyfile_dict(credentials_dict)
 
-client = storage.Client.from_service_account_json('pKey.json')
-bucket = client.get_bucket('bucket-proto1')
-blob = bucket.blob('myfile')
-blob.upload_from_filename('main.py')
+# client = storage.Client.from_service_account_json('pKey.json')
+# bucket = client.get_bucket('bucket-proto1')
+# blob = bucket.blob('myfile')
+# blob.upload_from_filename('main.py')
 
 
 

@@ -69,7 +69,7 @@ class PackageCreate(Resource):
 class PackageRate(Resource):
     def get(self,id):
         ID = PackageID(id)
-        ## Get ratings of the packages based on id
+        uploadRatings(rate_Package('testfile.txt'))
         # PackageRating = PackageRating(ratings)
         return {'description':'Return the rating. Only use this if each metric was computed successfully.'}
 

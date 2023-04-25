@@ -2,8 +2,24 @@ from flask import Flask, render_template, send_from_directory, request
 from flask_restful import Api, Resource, reqparse, abort
 import re
 from enum import Enum
+import subprocess
+import os
+from website.models.sql_table import *
+import json
 
-# Update for package data
+def uploadRatings(Name,Version,ratings):
+    add_package(Name,Version,ratings)
+    
+
+def rate_Package(URL):
+    os.chdir('/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/')
+    # subprocess.run(['/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/run','install'])
+    subprocess.run(['run','build'])
+    result = subprocess.run(['/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/run', URL],capture_output = True, text = True)
+    output = result.stdout
+    return json.loads(output.split(']')[1])
+
+
 def MetaData_reqparse():
     args = reqparse.RequestParser()
     args.add_argument("Name",type = str,help = "Name of package is required",required = True)

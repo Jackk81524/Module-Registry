@@ -29,7 +29,7 @@ def create_app():
     api.add_resource(RegistryReset,"/reset")
     api.add_resource(Package,"/package/<string:id>")
     api.add_resource(PackageCreate,"/package")
-    api.add_resource(PackageRate,"/package/<string:id>/rate")
+    api.add_resource(PackageRate,"/package/rate")
     api.add_resource(PackageHistory,"/package/byName/<string:name>")
     api.add_resource(PackageByRegExGet,"/package/byRegex/<string:rate>")
     app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://461-user:461-test@/Module-Registry?unix_socket=/cloudsql/module-registry-ece461:us-central1:ece461-module-registry"

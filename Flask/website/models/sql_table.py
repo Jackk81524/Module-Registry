@@ -7,7 +7,7 @@ class Packages_table(db.Model):
     NAME = db.Column(db.String(255), unique=True, nullable=True)
     VERSION = db.Column(db.String(50), nullable=True)
     UPDATEDBY = db.Column(db.String(50), nullable=True)
-    LAST_UPDATED = db.Column(db.DateTime, nullable=True)
+    # LAST_UPDATED = db.Column(db.DateTime, nullable=True)
     RAMPUP = db.Column(db.Float, nullable=True)
     CORRECTNESS = db.Column(db.Float, nullable=True)
     BUSFACTOR = db.Column(db.Float, nullable=True)
@@ -17,8 +17,16 @@ class Packages_table(db.Model):
     PULLREQUEST = db.Column(db.Float, nullable=True)
     NETSCORE = db.Column(db.Float, nullable=True)
 
-def add_package(NAME):
-    new_package = Packages_table(ID=31,NAME = NAME,VERSION = "1.1.2",NETSCORE = 1.1)
+
+def add_package(Name,Version,ratings):
+    new_package = Packages_table(ID=1,NAME = Name,VERSION = Version,
+        NETSCORE = ratings["NetScore"],
+        RAMPUP = ratings["RampUp"],
+        CORRECTNESS = ratings["Correctness"],
+        BUSFACTOR = ratings["BusFactor"],
+        RESPONSIVEMAINTAINER = ratings["ResponsiveMaintainer"],
+        LICENSESCORE = ratings["License"],
+        )
     db.session.add(new_package)
     db.session.commit()
 
