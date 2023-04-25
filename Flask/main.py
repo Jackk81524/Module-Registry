@@ -1,3 +1,6 @@
+import os
+import sys
+from decouple import config
 from website import create_app
 from flask_restful import Api, Resource
 from flask import Flask, request, render_template, send_from_directory
@@ -5,20 +8,25 @@ from website.frontend import bp
 import requests
 from flask_restful import abort
 import json
+#import datetime
 from google.cloud import storage
-import os
-import base64
-import zipfile
-# client = storage.Client.from_service_account_json('pKey.json')
-# bucket = client.get_bucket('bucket-proto1')
-# blob = bucket.blob('myfile')
-# blob.upload_from_filename('main.py')
+from google.oauth2 import service_account
 
+#Private Key Grab and Authentication
+pKey = config('P_KEY')
+gcp_json_credentials_dict = json.loads(pKey)
+credentials = service_account.Credentials.from_service_account_info(gcp_json_credentials_dict)
+client = storage.Client(project=gcp_json_credentials_dict['project_id'], credentials=credentials)
+
+
+#Storing File called myfile# onto Storage Bucket
+bucket = client.get_bucket('bucket-proto1')
+blob = bucket.blob('myfile1')
+blob.upload_from_filename('main.py')
 
 
 app = create_app()
 BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/' 
-BASE = 'http://localhost:8000/'
 @app.route("/")
 def defaultPage():
     return render_template('mainPage.html')
@@ -94,23 +102,15 @@ def handleUploaded():
     if len(URL) != 0 and ZipFile.read() != b"":
         abort(400)
     elif URL != "":
-        response = requests.post(BASE + 'package',json = jsonify({'URL' : URL,'ZipFile' : None}),headers = headers)
+        response = requests.post(BASE + 'package',json = {'URL' : URL,'ZipFile' : None},headers = headers)
     elif ZipFile != None:
-        Zip2 = ZipFile
-        with zipfile.ZipFile(ZipFile, mode="r") as archive:
-            for info in archive.infolist():
-                print(info.filename)
-                if info.filename.endswith('.json'):
-                    print('Match: ', info.filename)
-                    archive.extract(info.filename, info.filename)
         ZipFile_string = base64.b64encode(ZipFile.read()).decode('utf-8')
-        response = requests.post(BASE + 'package',json = {'URL' : None,'ZipFile' : Zip2},headers = headers)
+        response = requests.post(BASE + 'package',json = {'URL' : None,'ZipFile' : ZipFile_string},headers = headers)
     else:
         abort(501)
-    print(response.content)
     return response.json(), response.status_code
 
 
 if __name__ == "__main__":
     # app.register_blueprint(bp)
-    app.run(host="localhost",port = 8000, debug=True)
+    app.run(host="localhost",port = 8080, debug=True)

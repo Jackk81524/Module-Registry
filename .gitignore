@@ -126,3 +126,6 @@ dist
 
 # Go workspace file
 go.work
+
+#Ignore Environment Variables
+*.env
