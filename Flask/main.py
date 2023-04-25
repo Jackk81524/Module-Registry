@@ -10,16 +10,16 @@ import base64
 import zipfile
 
 #Private Key Grab and Authentication
-pKey = config('P_KEY')
-gcp_json_credentials_dict = json.loads(pKey)
-credentials = service_account.Credentials.from_service_account_info(gcp_json_credentials_dict)
-client = storage.Client(project=gcp_json_credentials_dict['project_id'], credentials=credentials)
+# pKey = config('P_KEY')
+# gcp_json_credentials_dict = json.loads(pKey)
+# credentials = service_account.Credentials.from_service_account_info(gcp_json_credentials_dict)
+# client = storage.Client(project=gcp_json_credentials_dict['project_id'], credentials=credentials)
 
 
-#Storing File called myfile# onto Storage Bucket
-bucket = client.get_bucket('bucket-proto1')
-blob = bucket.blob('myfile1')
-blob.upload_from_filename('main.py')
+# #Storing File called myfile# onto Storage Bucket
+# bucket = client.get_bucket('bucket-proto1')
+# blob = bucket.blob('myfile1')
+# blob.upload_from_filename('main.py')
 
 
 app = create_app()
