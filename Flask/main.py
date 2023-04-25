@@ -8,12 +8,15 @@ from google.cloud import storage
 from google.oauth2 import service_account
 import base64
 import zipfile
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 #Private Key Grab and Authentication
-# pKey = config('P_KEY')
-# gcp_json_credentials_dict = json.loads(pKey)
-# credentials = service_account.Credentials.from_service_account_info(gcp_json_credentials_dict)
-# client = storage.Client(project=gcp_json_credentials_dict['project_id'], credentials=credentials)
+pKey = os.environ.get('P_KEY')
+gcp_json_credentials_dict = json.loads(pKey)
+credentials = service_account.Credentials.from_service_account_info(gcp_json_credentials_dict)
+client = storage.Client(project=gcp_json_credentials_dict['project_id'], credentials=credentials)
 
 
 # #Storing File called myfile# onto Storage Bucket

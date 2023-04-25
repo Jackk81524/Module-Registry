@@ -28,8 +28,5 @@ python-decouple==3.8
 # https://pypi.org/project/oauth2client/
 oauth2client==4.1.3
 
-#
-
-
-
-
+# https://pypi.org/project/python-dotenv/
+python-dotenv==1.0.0
