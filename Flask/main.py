@@ -13,16 +13,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 #Private Key Grab and Authentication
-pKey = os.environ.get('P_KEY')
-gcp_json_credentials_dict = json.loads(pKey)
+#pKey = os.environ.get('P_KEY')
+gcp_json_credentials_dict = json.loads('/gcs-key')
 credentials = service_account.Credentials.from_service_account_info(gcp_json_credentials_dict)
 client = storage.Client(project=gcp_json_credentials_dict['project_id'], credentials=credentials)
 
-
-# #Storing File called myfile# onto Storage Bucket
-# bucket = client.get_bucket('bucket-proto1')
-# blob = bucket.blob('myfile1')
-# blob.upload_from_filename('main.py')
+#Storing File called myfile# onto Storage Bucket
+bucket = client.get_bucket('bucket-proto1')
+blob = bucket.blob('myfileTest')
+blob.upload_from_filename('main.py')
 
 
 app = create_app()
