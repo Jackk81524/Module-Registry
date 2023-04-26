@@ -8,37 +8,48 @@ from website.models.sql_table import *
 import json
 import tempfile
 import zipfile
+import git
+import requests 
+import base64
+
+def get_packageJson(url):
+    urls = url.split("/")
+    api_url = urls[0] + '//api.' + urls[2] + '/repos/' + urls[3] + "/" + urls[4] + "/contents/package.json"
+    response = requests.get("https://api.github.com/repos/lodash/lodash/contents/package.json")
+    file_content = json.loads(response.content)["content"]
+    content = base64.b64decode(file_content)
+    content = json.loads(content)
+    MetaData = PackageMetadata(content["name"],content["version"])
+    return MetaData
+
 
 def extract_packageURL(ZipFile):
-    with zipfile.ZipFile(ZipFile, mode="r") as archive:
-        for info in archive.infolist():
-            if info.filename.endswith('package.json'):
-                print('Match: ', info.filename)
-                if '/' in info.filename: # handle subdirectories
-                    # create a temporary directory
-                    with tempfile.TemporaryDirectory() as tmp_dir:
-                        archive.extractall(tmp_dir)
-                        sub_dir, file_name = os.path.split(info.filename)
-                        file_path = os.path.join(tmp_dir, sub_dir, file_name)
-                        with open(file_path, 'r') as f:
-                            data = json.loads(f.read())
-                            # print(contents)
-                else:
-                    with archive.open(info.filename) as f:
-                        contents = f.read()
-    return PackageQuery(data["name"],data["version"]),data["homepage"]
+    
+    return PackageMetadata(data["name"],data["version"]),data["homepage"]
 
-def uploadRatings(Name,Version,ratings):
-    add_package(Name,Version,ratings)
+def uploadRatings(Name,Version,ratings,URL,trusted = False):
+    if trusted:
+        add_package(Name,Version,ratings,URL)
+        return True
+    else:
+        for metric,score in ratings.items():
+            if metric != "URL":
+                if float(score) < 0.5:
+                    return False
+        add_package(Name,Version,ratings)
     
 
 def rate_Package(URL):
     os.chdir('/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/')
+    f = open("url.txt","w")
+    f.write(URL)
+    f.close()
     # subprocess.run(['/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/run','install'])
     subprocess.run(['run','build'])
-    result = subprocess.run(['/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/run', URL],capture_output = True, text = True)
+    result = subprocess.run(['/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/run', "url.txt"],capture_output = True, text = True)
     output = result.stdout
-    return json.loads(output.split(']')[1])
+    os.chdir("/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/Flask/")
+    return json.loads(output)
 
 
 def MetaData_reqparse():
@@ -73,7 +84,7 @@ class Error:
         
 
 class PackageMetadata:
-    def __init__(self,Name,Version,ID):
+    def __init__(self,Name,Version,ID=None):
         self.Name = PackageName(Name)
         self.Version = SemverRange(Version)
         self.ID = ID

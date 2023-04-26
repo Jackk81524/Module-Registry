@@ -4,6 +4,7 @@ from website.models.sql_table import *
 from website.components_API import *
 import json
 import base64
+import io
 
 
 packages = {"lodash" : ["lodash","v2.2.2"]}
@@ -58,15 +59,18 @@ class Package(Resource):
 class PackageCreate(Resource):
     def post(self):
         if "URL" in request.json and request.json["URL"] != None:
-            ratings = rate_Package(request.json["URL"])
-            ## Need name and version
+            URL = request.json["URL"]
+            MetaData = get_packageJson(URL)
+            ratings = rate_Package(URL)
+            uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,trusted=False)
             return make_response(jsonify({'description': 'URL success.'}), 200)
         elif "ZipFile" in request.json and request.json["ZipFile"] != None:
             ZipFile_bytes = base64.b64decode(request.json["ZipFile"].encode('utf-8'))
             ZipFile_buffer = io.BytesIO(ZipFile_bytes)
-            NameVer, URL = extract_packageURL(ZipFile_buffer)
+            MetaData, URL = extract_packageURL(ZipFile_buffer)
+            ratings = rate_Package(URL)
+            uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,trusted=True)
             return make_response(jsonify({'Content': request.json["ZipFile"]}), 200)
-
         return {'description' : 'Not as expected'}
 
 

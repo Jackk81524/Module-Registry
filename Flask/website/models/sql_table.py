@@ -3,11 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 class Packages_table(db.Model):
-    ID = db.Column(db.Integer, primary_key=True, nullable=False)
+    ID = db.Column(db.Integer, primary_key=True, nullable=False,autoincrement=True)
     NAME = db.Column(db.String(255), unique=True, nullable=True)
     VERSION = db.Column(db.String(50), nullable=True)
-    UPDATEDBY = db.Column(db.String(50), nullable=True)
-    # LAST_UPDATED = db.Column(db.DateTime, nullable=True)
     RAMPUP = db.Column(db.Float, nullable=True)
     CORRECTNESS = db.Column(db.Float, nullable=True)
     BUSFACTOR = db.Column(db.Float, nullable=True)
@@ -16,16 +14,18 @@ class Packages_table(db.Model):
     GOODPINNINGPRACTICE = db.Column(db.Float, nullable=True)
     PULLREQUEST = db.Column(db.Float, nullable=True)
     NETSCORE = db.Column(db.Float, nullable=True)
+    URL = db.Column(db.String(99),nullable = True)
 
 
-def add_package(Name,Version,ratings):
-    new_package = Packages_table(ID=1,NAME = Name,VERSION = Version,
+def add_package(Name,Version,ratings,URL):
+    new_package = Packages_table(NAME = Name,VERSION = Version,
         NETSCORE = ratings["NetScore"],
         RAMPUP = ratings["RampUp"],
         CORRECTNESS = ratings["Correctness"],
         BUSFACTOR = ratings["BusFactor"],
         RESPONSIVEMAINTAINER = ratings["ResponsiveMaintainer"],
         LICENSESCORE = ratings["License"],
+        URL = URL
         )
     db.session.add(new_package)
     db.session.commit()
