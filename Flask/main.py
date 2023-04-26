@@ -18,10 +18,10 @@ load_dotenv()
 #credentials = service_account.Credentials.from_service_account_info(gcp_json_credentials_dict)
 #client = storage.Client(project=gcp_json_credentials_dict['project_id'], credentials=credentials)
 
-client = storage.client('/gcs-key')
-#Storing File called myfile# onto Storage Bucket
-bucket = client.get_bucket('bucket-proto1')
-blob = bucket.blob('myfileTest')
+# client = storage.client('/gcs-key')
+# #Storing File called myfile# onto Storage Bucket
+# bucket = client.get_bucket('bucket-proto1')
+# blob = bucket.blob('myfileTest')
 #blob.upload_from_filename('main.py')
 
 
@@ -105,13 +105,6 @@ def handleUploaded():
     elif URL != "":
         response = requests.post(BASE + 'package',json = {'URL' : URL,'ZipFile' : None},headers = headers)
     elif ZipFile != None:
-        Zip2 = ZipFile
-        with zipfile.ZipFile(ZipFile, mode="r") as archive:
-            for info in archive.infolist():
-                print(info.filename)
-                if info.filename.endswith('.json'):
-                    print('Match: ', info.filename)
-                    archive.extract(info.filename, info.filename)
         ZipFile_string = base64.b64encode(ZipFile.read()).decode('utf-8')
         response = requests.post(BASE + 'package',json = {'URL' : None,'ZipFile' : ZipFile_string},headers = headers)
     else:
