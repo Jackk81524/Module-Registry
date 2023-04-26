@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from google.cloud.sql.connector import Connector, IPTypes
 from website.models.sql_table import db, Packages_table, add_package
 import requests
+import sqlalchemy
 
 # def getconn():
 #     with Connector() as connector:
