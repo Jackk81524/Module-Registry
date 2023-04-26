@@ -23,7 +23,7 @@ client = storage.Client()
 #Storing File called myfile# onto Storage Bucket
 bucket = client.get_bucket('bucket-proto1')
 blob = bucket.blob('myfileTest')
-#blob.upload_from_filename('main.py')
+blob.upload_from_string("testingggg pls work")
 
 
 app = create_app()
