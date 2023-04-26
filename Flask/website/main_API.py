@@ -5,6 +5,7 @@ from website.components_API import *
 import json
 import base64
 import io
+# from main import storage_client
 
 
 packages = {"lodash" : ["lodash","v2.2.2"]}
@@ -69,10 +70,11 @@ class PackageCreate(Resource):
         elif "ZipFile" in request.json and request.json["ZipFile"] != None:
             ZipFile_bytes = base64.b64decode(request.json["ZipFile"].encode('utf-8'))
             ZipFile_buffer = io.BytesIO(ZipFile_bytes)
+            uploadToBucket(request.json["ZipFile"],'Lodash', 'bucket-proto1')
             MetaData, URL = extract_packageURL(ZipFile_buffer)
             ratings = rate_Package(URL)
             uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,trusted=True)
-            ## upload
+            
             return make_response(jsonify({'Content': request.json["ZipFile"]}), 200)
         return {'description' : 'Not as expected'}
 

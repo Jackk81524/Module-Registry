@@ -11,6 +11,25 @@ import zipfile
 import requests 
 import base64
 import io
+from google.cloud import storage
+from google.cloud.storage import Bucket
+
+def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1'):
+    storage_client = storage.Client()
+    # storage_client = storage.Client.from_service_account_json('pKey.json')
+    # destination_blob_name = "storage-object-name"
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(destination_blob_name)
+    blob.upload_from_string(contents)
+
+    #Ensure upload is succesful
+    exists = Bucket(storage_client, bucket_name).exists()
+    if exists:
+        print(f"{destination_blob_name} with contents {contents} uploaded to {bucket_name}.")
+        return 1
+    else:
+        print("Error: Module not updated")
+        return 0
 
 def download_fromURL(URL):
     urls = URL.split("/")
