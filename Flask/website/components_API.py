@@ -8,14 +8,26 @@ from website.models.sql_table import *
 import json
 import tempfile
 import zipfile
-import git
 import requests 
 import base64
+import io
+
+def download_fromURL(URL):
+    urls = URL.split("/")
+    api_url = urls[0] + '//api.' + urls[2] + '/repos/' + urls[3] + "/" + urls[4]
+    filename = urls.pop()
+    response = requests.get(api_url)
+    default_branch = response.json()["default_branch"]
+    zip_url = f"{URL}/archive/{default_branch}.zip"
+    response = requests.get(zip_url)
+    stream = io.BytesIO(response.content)
+
+
 
 def get_packageJson(url):
     urls = url.split("/")
     api_url = urls[0] + '//api.' + urls[2] + '/repos/' + urls[3] + "/" + urls[4] + "/contents/package.json"
-    response = requests.get("https://api.github.com/repos/lodash/lodash/contents/package.json")
+    response = requests.get(api_url)
     file_content = json.loads(response.content)["content"]
     content = base64.b64decode(file_content)
     content = json.loads(content)
@@ -24,8 +36,26 @@ def get_packageJson(url):
 
 
 def extract_packageURL(ZipFile):
-    
-    return PackageMetadata(data["name"],data["version"]),data["homepage"]
+    with zipfile.ZipFile(ZipFile, mode="r") as archive:
+        for info in archive.infolist():
+            if info.filename.endswith('package.json'):
+                print('Match: ', info.filename)
+                if '/' in info.filename: # handle subdirectories
+                    # create a temporary directory
+                    with tempfile.TemporaryDirectory() as tmp_dir:
+                        archive.extractall(tmp_dir)
+                        sub_dir, file_name = os.path.split(info.filename)
+                        file_path = os.path.join(tmp_dir, sub_dir, file_name)
+                        with open(file_path, 'r') as f:
+                            data = json.loads(f.read())
+                            # print(contents)
+                else:
+                    with archive.open(info.filename) as f:
+                        data = json.loads(f.read())
+    if "homepage" in data:
+        return PackageMetadata(data["name"],data["version"]),data["homepage"]
+    else:
+        return PackageMetadata(data["name"],data["version"])
 
 def uploadRatings(Name,Version,ratings,URL,trusted = False):
     if trusted:
@@ -180,3 +210,4 @@ class Action(Enum):
     UPDATE = 'UPDATE'
     DOWNLOAD = 'DOWNLOAD'
     RATE = 'RATE'
+
