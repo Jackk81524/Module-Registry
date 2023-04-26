@@ -6,6 +6,27 @@ import subprocess
 import os
 from website.models.sql_table import *
 import json
+import tempfile
+import zipfile
+
+def extract_packageURL(ZipFile):
+    with zipfile.ZipFile(ZipFile, mode="r") as archive:
+        for info in archive.infolist():
+            if info.filename.endswith('package.json'):
+                print('Match: ', info.filename)
+                if '/' in info.filename: # handle subdirectories
+                    # create a temporary directory
+                    with tempfile.TemporaryDirectory() as tmp_dir:
+                        archive.extractall(tmp_dir)
+                        sub_dir, file_name = os.path.split(info.filename)
+                        file_path = os.path.join(tmp_dir, sub_dir, file_name)
+                        with open(file_path, 'r') as f:
+                            data = json.loads(f.read())
+                            # print(contents)
+                else:
+                    with archive.open(info.filename) as f:
+                        contents = f.read()
+    return PackageQuery(data["name"],data["version"]),data["homepage"]
 
 def uploadRatings(Name,Version,ratings):
     add_package(Name,Version,ratings)
