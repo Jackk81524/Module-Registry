@@ -16,7 +16,7 @@ load_dotenv()
 # storage_client = storage.Client.from_service_account_json('pKey.json')
 
 # Authentication Step for Google Cloud Storage Services
-storage_client = storage.Client()
+# storage_client = storage.Client()
 
 # Storing Files from memory onto Storage Bucket
 def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1'):
