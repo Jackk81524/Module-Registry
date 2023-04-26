@@ -63,6 +63,8 @@ class PackageCreate(Resource):
             MetaData = get_packageJson(URL)
             ratings = rate_Package(URL)
             uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,trusted=False)
+            ZipFile = download_fromURL(URL)
+            ## Upload
             return make_response(jsonify({'description': 'URL success.'}), 200)
         elif "ZipFile" in request.json and request.json["ZipFile"] != None:
             ZipFile_bytes = base64.b64decode(request.json["ZipFile"].encode('utf-8'))
@@ -70,6 +72,7 @@ class PackageCreate(Resource):
             MetaData, URL = extract_packageURL(ZipFile_buffer)
             ratings = rate_Package(URL)
             uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,trusted=True)
+            ## upload
             return make_response(jsonify({'Content': request.json["ZipFile"]}), 200)
         return {'description' : 'Not as expected'}
 
