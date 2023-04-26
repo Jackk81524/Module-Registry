@@ -4,6 +4,8 @@ import requests
 from flask_restful import abort
 import json
 from google.cloud import storage
+from google.cloud.storage import Bucket
+
 from google.oauth2 import service_account
 import base64
 import zipfile
@@ -20,24 +22,34 @@ load_dotenv()
 #     blob = bucket.blob('myfileTest2')
 #     blob.upload_from_string("testingggg pls work")
 
+# Authentication Step for Google Cloud Storage Services
+storage_client = storage.Client()
+
 # Storing Files from memory onto Storage Bucket
 def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1'):
     # destination_blob_name = "storage-object-name"
-    storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(destination_blob_name)
     blob.upload_from_string(contents)
-    print(
-        f"{destination_blob_name} with contents {contents} uploaded to {bucket_name}."
-    )
 
+    #Ensure upload is succesful
+    exists = Bucket(storage_client, destination_blob_name).exists()
+    if exists:
+        print(f"{destination_blob_name} with contents {contents} uploaded to {bucket_name}.")
+    else:
+        print("Error: Module not updated")
 
 # This function returns the http download link for the user to download the module
 def downloadFromBucket(moduleName, bucketName='bucket-proto1'):
-    address = "https://storage.googleapis.com/"
-    address += bucketName + '/'
-    address += moduleName
-    return address
+    exists = Bucket(storage_client, moduleName).exists()
+    if (exists):
+        address = "https://storage.googleapis.com/"
+        address += bucketName + '/'
+        address += moduleName
+        return address
+
+    else:
+        print("Error: Module not found")
 
 
 app = create_app()
