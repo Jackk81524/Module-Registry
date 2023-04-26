@@ -17,10 +17,6 @@ load_dotenv()
 
 # ONLY for testing purposes on local machine. Private Key Grab and Authentication ONLY required to test on local machine. You need to have pKey.json in directory for below code to run.
 # client = storage.Client.from_service_account_json('pKey.json')
-# def uploadToBucket():
-#     bucket = client.get_bucket('bucket-proto1')
-#     blob = bucket.blob('myfileTest2')
-#     blob.upload_from_string("testingggg pls work")
 
 # Authentication Step for Google Cloud Storage Services
 storage_client = storage.Client()
