@@ -109,13 +109,6 @@ def handleUploaded():
     elif URL != "":
         response = requests.post(BASE + 'package',json = {'URL' : URL,'ZipFile' : None},headers = headers)
     elif ZipFile != None:
-        Zip2 = ZipFile
-        with zipfile.ZipFile(ZipFile, mode="r") as archive:
-            for info in archive.infolist():
-                print(info.filename)
-                if info.filename.endswith('.json'):
-                    print('Match: ', info.filename)
-                    archive.extract(info.filename, info.filename)
         ZipFile_string = base64.b64encode(ZipFile.read()).decode('utf-8')
         response = requests.post(BASE + 'package',json = {'URL' : None,'ZipFile' : ZipFile_string},headers = headers)
     else:
