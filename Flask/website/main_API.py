@@ -65,16 +65,16 @@ class PackageCreate(Resource):
             ratings = rate_Package(URL)
             uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,trusted=False)
             ZipFile = download_fromURL(URL)
-            ## Upload
+            uploadToBucket(request.json["ZipFile"],MetaData.Name.Name, 'bucket-proto1')
             return make_response(jsonify({'description': 'URL success.'}), 200)
         elif "ZipFile" in request.json and request.json["ZipFile"] != None:
             ZipFile_bytes = base64.b64decode(request.json["ZipFile"].encode('utf-8'))
             ZipFile_buffer = io.BytesIO(ZipFile_bytes)
-            uploadToBucket(request.json["ZipFile"],'Lodash', 'bucket-proto1')
+    
             MetaData, URL = extract_packageURL(ZipFile_buffer)
             ratings = rate_Package(URL)
             uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,trusted=True)
-            
+            uploadToBucket(request.json["ZipFile"],MetaData.Name.Name, 'bucket-proto1')
             return make_response(jsonify({'Content': request.json["ZipFile"]}), 200)
         return {'description' : 'Not as expected'}
 
