@@ -50,7 +50,7 @@ def connect_with_connector() -> sqlalchemy.engine.base.Engine:
 
     pool = sqlalchemy.create_engine(
         "mysql+pymysql://",
-        creator=getconn,
+        creator=getconn
         # ...
     )
     return pool
