@@ -18,7 +18,8 @@ load_dotenv()
 #credentials = service_account.Credentials.from_service_account_info(gcp_json_credentials_dict)
 #client = storage.Client(project=gcp_json_credentials_dict['project_id'], credentials=credentials)
 
-client = storage.client('/gcs-key')
+#client = storage.client('gcs-key')
+client = storage.Client.from_service_account_json('gcs-key.json')
 #Storing File called myfile# onto Storage Bucket
 bucket = client.get_bucket('bucket-proto1')
 blob = bucket.blob('myfileTest')
