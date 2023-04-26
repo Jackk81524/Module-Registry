@@ -1,4 +1,3 @@
-from decouple import config
 from website import create_app
 from flask import Flask, request, render_template, send_from_directory
 import requests
@@ -12,18 +11,23 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-#Private Key Grab and Authentication
-#pKey = os.environ.get('P_KEY')
-#gcp_json_credentials_dict = json.loads('/gcs-key')
-#credentials = service_account.Credentials.from_service_account_info(gcp_json_credentials_dict)
-#client = storage.Client(project=gcp_json_credentials_dict['project_id'], credentials=credentials)
+#ONLY for testing purposes on local machine. Private Key Grab and Authentication ONLY required to test on local machine. You need to have pKey.json in directory for below code to run.
+# client = storage.Client.from_service_account_json('pKey.json')
+# def uploadToBucket():
+#     bucket = client.get_bucket('bucket-proto1')
+#     blob = bucket.blob('myfileTest2')
+#     blob.upload_from_string("testingggg pls work")
 
-# client = storage.client('/gcs-key')
-# #Storing File called myfile# onto Storage Bucket
-# bucket = client.get_bucket('bucket-proto1')
-# blob = bucket.blob('myfileTest')
-#blob.upload_from_filename('main.py')
-
+#Storing Files from memory onto Storage Bucket
+def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1'):
+    # destination_blob_name = "storage-object-name"
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(destination_blob_name)
+    blob.upload_from_string(contents)
+    print(
+        f"{destination_blob_name} with contents {contents} uploaded to {bucket_name}."
+    )
 
 app = create_app()
 BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/'
