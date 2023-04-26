@@ -10,12 +10,12 @@ import requests
 def getconn():
     with Connector() as connector:
         conn = connector.connect(
-            "module-registry-ece461:us-central1:ece461-module-registry",
-            "pymysql",
-            user="461-user",
-            password="461-test",
-            db="Module-Registry",
-            ip_type= IPTypes.PUBLIC 
+            # "module-registry-ece461:us-central1:ece461-module-registry",
+            # "pymysql",
+            # user="461-user",
+            # password="461-test",
+            # db="Module-Registry",
+            # ip_type= IPTypes.PUBLIC 
         )
         return conn
 
