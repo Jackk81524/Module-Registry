@@ -5,13 +5,10 @@ from flask_restful import abort
 import json
 from google.cloud import storage
 from google.cloud.storage import Bucket
-
-from google.oauth2 import service_account
 import base64
 import zipfile
 import os
 from dotenv import load_dotenv
-
 load_dotenv()
 
 
@@ -32,13 +29,15 @@ def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1')
     exists = Bucket(storage_client, destination_blob_name).exists()
     if exists:
         print(f"{destination_blob_name} with contents {contents} uploaded to {bucket_name}.")
+        return 1
     else:
         print("Error: Module not updated")
+        return 0
 
 # This function returns the http download link for the user to download the module
 def downloadFromBucket(moduleName, bucketName='bucket-proto1'):
     exists = Bucket(storage_client, moduleName).exists()
-    if (exists):
+    if exists:
         address = "https://storage.googleapis.com/"
         address += bucketName + '/'
         address += moduleName
@@ -46,6 +45,7 @@ def downloadFromBucket(moduleName, bucketName='bucket-proto1'):
 
     else:
         print("Error: Module not found")
+        return 0
 
 
 app = create_app()
