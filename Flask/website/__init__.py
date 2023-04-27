@@ -1,7 +1,6 @@
 from flask import Flask
 from flask_restful import Api, Resource
 from website.main_API import *
-import pymysql
 from flask_sqlalchemy import SQLAlchemy
 from google.cloud.sql.connector import Connector, IPTypes
 # from website.models.sql_table import Packages_table, add_package
