@@ -9,7 +9,7 @@ RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
 # Copy the rest of the application code into the container at /app
 COPY . /Flask
-ENTRYPOINT ["python", "main.py"]
+GOOGLE_ENTRYPOINT ["python", "main.py"]
 # Expose the port that the application will run on
 EXPOSE 8080
 
