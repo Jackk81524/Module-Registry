@@ -32,8 +32,7 @@ class PackagesList(Resource):
 
 class RegistryReset(Resource):
     def delete(self):
-        print("here")
-        # reset_all_packages()
+        reset_all_packages()
         return make_response(jsonify({'description': 'Registry is reset.'}), 200)
 
 class Package(Resource):
