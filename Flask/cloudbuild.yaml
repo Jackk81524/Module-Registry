@@ -1,6 +1,6 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-central1-docker.pkg.dev/module-registry-ece461/cloud-run-source-deploy/module-registry/module-registry-website', '.']
+  args: ['build', '-t', 'us.gcr.io/module-registry-ece461/module-registry', '.']
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'us-central1-docker.pkg.dev/module-registry-ece461/cloud-run-source-deploy/module-registry/module-registry-website']
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
