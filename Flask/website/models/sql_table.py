@@ -4,48 +4,48 @@ import sqlalchemy
 from google.cloud.sql.connector import Connector, IPTypes
 import pymysql
 
-def connect_with_connector() -> sqlalchemy.engine.base.Engine:
-    instance_connection_name = "module-registry-ece461:us-central1:ece461-module-registry"
-    db_user = "461-user"  # e.g. 'my-db-user'
-    db_pass = "461-test"  # e.g. 'my-db-password'
-    db_name = "Module-Registry"  # e.g. 'my-database'
+# def connect_with_connector() -> sqlalchemy.engine.base.Engine:
+#     instance_connection_name = "module-registry-ece461:us-central1:ece461-module-registry"
+#     db_user = "461-user"  # e.g. 'my-db-user'
+#     db_pass = "461-test"  # e.g. 'my-db-password'
+#     db_name = "Module-Registry"  # e.g. 'my-database'
 
-    ip_type = IPTypes.PUBLIC
+#     ip_type = IPTypes.PUBLIC
 
-    connector = Connector(ip_type)
+#     connector = Connector(ip_type)
 
-    def getconn() -> pymysql.connections.Connection:
-        conn: pymysql.connections.Connection = connector.connect(
-            instance_connection_name,
-            "pymysql",
-            user=db_user,
-            password=db_pass,
-            db=db_name,
-        )
-        return conn
+#     def getconn() -> pymysql.connections.Connection:
+#         conn: pymysql.connections.Connection = connector.connect(
+#             instance_connection_name,
+#             "pymysql",
+#             user=db_user,
+#             password=db_pass,
+#             db=db_name,
+#         )
+#         return conn
 
-    pool = sqlalchemy.create_engine(
-        "mysql+pymysql://",
-        creator=getconn
-        # ...
-    )
-    return pool
+#     pool = sqlalchemy.create_engine(
+#         "mysql+pymysql://",
+#         creator=getconn
+#         # ...
+#     )
+#     return pool
 
-# db = SQLAlchemy()
+db = SQLAlchemy()
 
-# class Packages_table(db.Model):
-#     ID = db.Column(db.Integer, primary_key=True, nullable=False,autoincrement=True)
-#     NAME = db.Column(db.String(255), unique=True, nullable=True)
-#     VERSION = db.Column(db.String(50), nullable=True)
-#     RAMPUP = db.Column(db.Float, nullable=True)
-#     CORRECTNESS = db.Column(db.Float, nullable=True)
-#     BUSFACTOR = db.Column(db.Float, nullable=True)
-#     RESPONSIVEMAINTAINER = db.Column(db.Float, nullable=True)
-#     LICENSESCORE = db.Column(db.Float, nullable=True)
-#     GOODPINNINGPRACTICE = db.Column(db.Float, nullable=True)
-#     PULLREQUEST = db.Column(db.Float, nullable=True)
-#     NETSCORE = db.Column(db.Float, nullable=True)
-#     URL = db.Column(db.String(99),nullable = True)
+class Packages_table(db.Model):
+    ID = db.Column(db.Integer, primary_key=True, nullable=False,autoincrement=True)
+    NAME = db.Column(db.String(255), unique=True, nullable=True)
+    VERSION = db.Column(db.String(50), nullable=True)
+    RAMPUP = db.Column(db.Float, nullable=True)
+    CORRECTNESS = db.Column(db.Float, nullable=True)
+    BUSFACTOR = db.Column(db.Float, nullable=True)
+    RESPONSIVEMAINTAINER = db.Column(db.Float, nullable=True)
+    LICENSESCORE = db.Column(db.Float, nullable=True)
+    GOODPINNINGPRACTICE = db.Column(db.Float, nullable=True)
+    PULLREQUEST = db.Column(db.Float, nullable=True)
+    NETSCORE = db.Column(db.Float, nullable=True)
+    URL = db.Column(db.String(99),nullable = True)
 
 
 def add_package(Name,Version,ratings,URL):

@@ -15,8 +15,8 @@ from google.cloud import storage
 from google.cloud.storage import Bucket
 
 def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1'):
-    storage_client = storage.Client()
-    # storage_client = storage.Client.from_service_account_json('pKey.json')
+    # storage_client = storage.Client()
+    storage_client = storage.Client.from_service_account_json('pKey.json')
     # destination_blob_name = "storage-object-name"
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(destination_blob_name)
@@ -32,14 +32,16 @@ def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1')
         return 0
 
 def download_fromURL(URL):
+    
     urls = URL.split("/")
     api_url = urls[0] + '//api.' + urls[2] + '/repos/' + urls[3] + "/" + urls[4]
     filename = urls.pop()
-    response = requests.get(api_url)
+    response = requests.get(api_url, headers = {'Authorization': 'token ' + token})
     default_branch = response.json()["default_branch"]
     zip_url = f"{URL}/archive/{default_branch}.zip"
     response = requests.get(zip_url)
     stream = io.BytesIO(response.content)
+    return stream
 
 
 
@@ -98,7 +100,10 @@ def rate_Package(URL):
     result = subprocess.run(['/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/run', "url.txt"],capture_output = True, text = True)
     output = result.stdout
     os.chdir("/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/Flask/")
-    return json.loads(output)
+    if output != None:
+        return json.loads(output)
+    else:
+        return {"URL":URL,"NetScore":-1,"RampUp":-1,"Correctness":-1,"BusFactor":-1,"ResponsiveMaintainer":-1,"License":-1}
 
 
 def MetaData_reqparse():

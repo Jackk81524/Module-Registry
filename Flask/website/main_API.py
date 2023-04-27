@@ -8,7 +8,6 @@ import io
 # from main import storage_client
 
 
-packages = {"lodash" : ["lodash","v2.2.2"]}
 
 class PackagesList(Resource):
     def post(self):
@@ -60,12 +59,18 @@ class Package(Resource):
 class PackageCreate(Resource):
     def post(self):
         if "URL" in request.json and request.json["URL"] != None:
+            print("Entered")
             URL = request.json["URL"]
             MetaData = get_packageJson(URL)
+            print(MetaData.Name.Name,"Get pacakge.json")
             ratings = rate_Package(URL)
-            uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,trusted=False)
+            print("Rated")
+            uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,trusted=True)
+            print("Uploaded")
             ZipFile = download_fromURL(URL)
-            uploadToBucket(request.json["ZipFile"],MetaData.Name.Name, 'bucket-proto1')
+            # print(ZipFile)
+            ZipFile = base64.b64encode(ZipFile.read()).decode('utf-8')
+            uploadToBucket(ZipFile,MetaData.Name.Name, 'bucket-proto1')
             return make_response(jsonify({'description': 'URL success.'}), 200)
         elif "ZipFile" in request.json and request.json["ZipFile"] != None:
             ZipFile_bytes = base64.b64decode(request.json["ZipFile"].encode('utf-8'))
