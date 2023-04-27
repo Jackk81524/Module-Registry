@@ -4,35 +4,21 @@ from website.main_API import *
 import pymysql
 from flask_sqlalchemy import SQLAlchemy
 from google.cloud.sql.connector import Connector, IPTypes
-from website.models.sql_table import db, Packages_table, add_package
+# from website.models.sql_table import Packages_table, add_package
 import requests
 
-def getconn():
-    with Connector() as connector:
-        conn = connector.connect(
-            "module-registry-ece461:us-central1:ece461-module-registry",
-            "pymysql",
-            user="461-user",
-            password="461-test",
-            db="Module-Registry",
-            ip_type= IPTypes.PUBLIC 
-        )
-        return conn
+# def getconn():
+#     with Connector() as connector:
+#         conn = connector.connect(
+#             "module-registry-ece461:us-central1:ece461-module-registry",
+#             "pymysql",
+#             user="461-user",
+#             password="461-test",
+#             db="Module-Registry",
+#             ip_type= IPTypes.PUBLIC 
+#         )
+#         return conn
 
-# db_user = "461-user"
-# db_password = "461-test"
-# db_name = "Module-Registry"
-# db_connection_name = "module-registry-ece461:us-central1:ece461-module-registry"
-
-# def open_connection():
-#     unix_socket = 'cloudsql/{}'.format(db_connection_name)
-#     conn = pymysql.connect(user = db_user,
-#                         password = db_password,
-#                         unix_socket = unix_socket,
-#                         db = db_name,
-#                         cursorclass= pymysql.cursors.DictCursor
-#                         )
-#     return conn
 
 def create_app():
     app = Flask(__name__)
@@ -45,11 +31,13 @@ def create_app():
     api.add_resource(PackageRate,"/package/rate")
     api.add_resource(PackageHistory,"/package/byName/<string:name>")
     api.add_resource(PackageByRegExGet,"/package/byRegex/<string:rate>")
-    app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://461-user:461-test@/Module-Registry?unix_socket=/cloudsql/module-registry-ece461:us-central1:ece461-module-registry"
+    # app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://461-user:461-test@/Module-Registry?unix_socket=/cloudsql/module-registry-ece461:us-central1:ece461-module-registry"
 
-    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-        "creator": getconn
-    }
-    db.init_app(app)
+    # app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    #     "creator": getconn
+    # }
+    # db.init_app(app)
+    # pool = connect_with_connector()
     return app
     
+
