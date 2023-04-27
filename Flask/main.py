@@ -18,6 +18,10 @@ load_dotenv()
 # Authentication Step for Google Cloud Storage Services
 # storage_client = storage.Client()
 
+app = create_app()
+BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/'
+# BASE = 'http://localhost:8080/'
+
 # Storing Files from memory onto Storage Bucket
 def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1'):
     # destination_blob_name = "storage-object-name"
@@ -49,7 +53,7 @@ def downloadFromBucket(moduleName, bucketName='bucket-proto1'):
 
 
 app = create_app()
-BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/'
+# BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/'
 BASE = 'http://localhost:8080/'
 
 
