@@ -20,4 +20,4 @@ EXPOSE 8080
 CMD /cloud_sql_proxy -instances=<module-registry-ece461:us-central1:ece461-module-registry>=tcp:3306 &
 
 # Start the application
-CMD ["python", "app.py"]
+CMD ["python", "main.py"]
