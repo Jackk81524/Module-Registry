@@ -49,8 +49,8 @@ def downloadFromBucket(moduleName, bucketName='bucket-proto1'):
 
 
 app = create_app()
-BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/'
-# BASE = 'http://localhost:8000/'
+# BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/'
+BASE = 'http://localhost:8080/'
 
 
 @app.route("/")
