@@ -1,5 +1,5 @@
 from website import create_app
-from flask import Flask, request, render_template, send_from_directory
+from flask import Flask, request, render_template, send_from_directory, jsonify
 import requests
 from flask_restful import abort
 import json
@@ -9,6 +9,7 @@ import base64
 import zipfile
 import os
 from dotenv import load_dotenv
+import ast
 load_dotenv()
 
 
@@ -22,23 +23,6 @@ app = create_app()
 BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/'
 BASE = 'http://localhost:8000/'
 
-# Storing Files from memory onto Storage Bucket
-def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1'):
-    # destination_blob_name = "storage-object-name"
-    bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(destination_blob_name)
-    blob.upload_from_string(contents)
-
-    #Ensure upload is succesful
-    exists = Bucket(storage_client, destination_blob_name).exists()
-    if exists:
-        print(f"{destination_blob_name} with contents {contents} uploaded to {bucket_name}.")
-        return 1
-    else:
-        print("Error: Module not updated")
-        return 0
-
-# This function returns the http download link for the user to download the module
 def downloadFromBucket(moduleName, bucketName='bucket-proto1'):
     exists = Bucket(storage_client, moduleName).exists()
     if exists:
@@ -61,12 +45,7 @@ BASE = 'http://localhost:8000/'
 def defaultPage():
     return render_template('mainPage.html')
 
-
-@app.route("/upload")
-def uploadPage():
-    return render_template('upload.html')
-
-
+### START FROTNEND FOR /packages ENDPOINT
 @app.route("/packagesListInput")
 def packagesListInput():
     return send_from_directory('templates', 'packages.html')
@@ -78,13 +57,15 @@ def packagesListDisplay():
     data = request.form.get("Query")
     headers = {'Content-Type': 'application/json'}
     if data == "[*]":
-        response = requests.post(BASE + 'packages', json={'PackageQuery': ["*"]}, headers=headers)
+        response = requests.post(BASE + 'packages', json=["*"], headers=headers)
     else:
-        response = requests.post(BASE + 'packages', json={'PackageQuery': json.loads(data)}, headers=headers)
-    # print(response)
-    return response.json(), response.status_code
+        response = requests.post(BASE + 'packages', json=json.loads(data), headers=headers)
+    items = ast.literal_eval(response.json())
+    if response.status_code == 413:
+        return response.json()
+    return render_template('return_packages.html',items=items)
     # return 'test'
-
+## END FRONTEND FOR /packages ENDPOINT
 
 @app.route("/toResetRegistry")
 def checkReset():
@@ -128,24 +109,25 @@ def RateID():
     return data.json(), data.status_code
 
 
-# @bp.get("/upload")
-# def toUpload():
-# print("testing file")
-# return render_template('mainPage.html')
-# return send_from_directory('templates','upload.html')
+@app.route("/upload")
+def uploadPage():
+    return render_template('upload.html')
 
 @app.route("/uploadContent", methods=["POST"])
 def handleUploaded():
     URL = request.form.get("URL")
     ZipFile = request.files.get("File")
+    JS = request.form.get("JSProgram")
+    if len(JS) == 0:
+        JS = None
     headers = {'Content-Type': 'application/json'}
     if len(URL) != 0 and ZipFile.read() != b"":
         abort(400)
     elif URL != "":
-        response = requests.post(BASE + 'package', json={'URL': URL, 'ZipFile': None}, headers=headers)
+        response = requests.post(BASE + 'package', json={'URL': URL, 'ZipFile': None, 'JSProgram': JS}, headers=headers)
     elif ZipFile != None:
         ZipFile_string = base64.b64encode(ZipFile.read()).decode('utf-8')
-        response = requests.post(BASE + 'package', json={'URL': None, 'ZipFile': ZipFile_string}, headers=headers)
+        response = requests.post(BASE + 'package', json={'URL': None, 'ZipFile': ZipFile_string, 'JSProgram': JS}, headers=headers)
     else:
         abort(501)
     return response.json(), response.status_code

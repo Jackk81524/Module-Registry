@@ -32,7 +32,7 @@ def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1')
         return 0
 
 def download_fromURL(URL):
-    token = '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'
+    token = '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'
     urls = URL.split("/")
     api_url = urls[0] + '//api.' + urls[2] + '/repos/' + urls[3] + "/" + urls[4]
     filename = urls.pop()
@@ -60,7 +60,7 @@ def extract_packageURL(ZipFile):
     with zipfile.ZipFile(ZipFile, mode="r") as archive:
         for info in archive.infolist():
             if info.filename.endswith('package.json'):
-                print('Match: ', info.filename)
+                # print('Match: ', info.filename)
                 if '/' in info.filename: # handle subdirectories
                     # create a temporary directory
                     with tempfile.TemporaryDirectory() as tmp_dir:
@@ -76,12 +76,12 @@ def extract_packageURL(ZipFile):
     if "homepage" in data:
         return PackageMetadata(data["name"],data["version"]),data["homepage"]
     else:
-        return PackageMetadata(data["name"],data["version"])
+        return PackageMetadata(data["name"],data["version"]), None
 
-def uploadRatings(Name,Version,ratings,URL,trusted = False):
+def uploadRatings(Name,Version,ratings,URL,JS = None,trusted = False):
     if trusted:
         try:
-            add_package(Name,Version,ratings,URL)
+            add_package(Name,Version,ratings,URL,JS)
         except:
             abort(409, "Package exists already")
 
@@ -90,11 +90,14 @@ def uploadRatings(Name,Version,ratings,URL,trusted = False):
         for metric,score in ratings.items():
             if metric != "URL":
                 if float(score) < 0.5:
-                    return False
-        add_package(Name,Version,ratings)
+                    return abort(424, "Package is not uploaded due to the disqualified rating.")
+        add_package(Name,Version,ratings,URL,JS)
     
 
 def rate_Package(URL):
+    default = {"URL":URL,"NetScore":-1,"RampUp":-1,"Correctness":-1,"BusFactor":-1,"ResponsiveMaintainer":-1,"License":-1}
+    if URL == None:
+        return default
     os.chdir('/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/')
     f = open("url.txt","w")
     f.write(URL)
@@ -104,11 +107,10 @@ def rate_Package(URL):
     result = subprocess.run(['/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/run', "url.txt"],capture_output = True, text = True)
     output = result.stdout
     os.chdir("/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/Flask/")
-    print('o',output)
     if output != '' and output != None:
         return json.loads(output)
     else:
-        return {"URL":URL,"NetScore":-1,"RampUp":-1,"Correctness":-1,"BusFactor":-1,"ResponsiveMaintainer":-1,"License":-1}
+        return default
 
 
 def MetaData_reqparse():
@@ -208,11 +210,19 @@ class Package:
         self.PackageData = Data
 
 class PackageData:
-    def __init__(self,request_type,JSProgram, content = None,URL = None):
-        if request_type == 'get':
-            self.content = content
-            self.URL = URL
-            self.JSProgram = JSProgram
+    def __init__(self,JSProgram, content = None,URL = None):
+        self.content = content
+        self.URL = URL
+        self.JSProgram = JSProgram
+
+    def to_dict(self):
+        resource_fields = {
+            'Content': self.content
+        }
+        if self.JSProgram != None:
+            resource_fields["JSProgram"] = self.JSProgram
+        return resource_fields
+
 
 class PackageRating:
     def __init__(self,RampUp,Correctness,BusFactor,ResponsiveMaintainer,LicenseScore,GoodPinningPractice,PullRequest,NetScore):

@@ -8,14 +8,19 @@ import io
 # from main import storage_client
 
 
-
+### /packages endpoint
 class PackagesList(Resource):
     def post(self):
-        PackagesToQuery = request.json["PackageQuery"]
+        PackagesToQuery = request.json
+        if(len(PackagesToQuery) > 50):
+            return json.dumps({'message' : 'Too many packages returned.'}), 413
         offset = EnumerateOffset(request)
-        output = {'value':[]}
+        output = []
         if(len(PackagesToQuery) == 1 and PackagesToQuery[0] == "*"):
             Queried = query_all_packages()
+            for data in Queried:
+                QueriedMetaData = PackageMetadata(data.NAME,data.VERSION,data.ID)
+                output.append(QueriedMetaData.to_dict())
         else:
             for package in PackagesToQuery:
                 if 'Version' in package:
@@ -23,9 +28,10 @@ class PackagesList(Resource):
                 else:
                     Query = PackageQuery(package['Name'])
                 Queried = query_package(Query)
-        for data in Queried:
-            QueriedMetaData = PackageMetadata(data.NAME,data.VERSION,data.ID)
-            output['value'].append(QueriedMetaData.to_dict())
+                for data in Queried:
+                    QueriedMetaData = PackageMetadata(data.NAME,data.VERSION,data.ID)
+                    output.append(QueriedMetaData.to_dict())
+        
         return json.dumps(output), 200
 
 
@@ -58,30 +64,26 @@ class Package(Resource):
 
 class PackageCreate(Resource):
     def post(self):
-        print("Enter")
+        JS = request.json["JSProgram"]
         if "URL" in request.json and request.json["URL"] != None:
-            print("Entered")
             URL = request.json["URL"]
             MetaData = get_packageJson(URL)
-            print(MetaData.Name.Name,"Get pacakge.json")
             ratings = rate_Package(URL)
-            print("Rated")
-            uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,trusted=True)
-            print("Uploaded")
+            uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,JS,trusted=False)
             ZipFile = download_fromURL(URL)
-            # print(ZipFile)
             ZipFile = base64.b64encode(ZipFile.read()).decode('utf-8')
             uploadToBucket(ZipFile,MetaData.blob_name(), 'bucket-proto1')
-            return make_response(jsonify({'description': 'URL success.'}), 200)
+            Data = PackageData(JS,ZipFile)
+            return make_response(jsonify({'metadata': MetaData.to_dict(),"data": Data.to_dict()}), 200)
         elif "ZipFile" in request.json and request.json["ZipFile"] != None:
             ZipFile_bytes = base64.b64decode(request.json["ZipFile"].encode('utf-8'))
             ZipFile_buffer = io.BytesIO(ZipFile_bytes)
-    
             MetaData, URL = extract_packageURL(ZipFile_buffer)
             ratings = rate_Package(URL)
-            uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,trusted=True)
+            uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,JS,trusted=True)
             uploadToBucket(request.json["ZipFile"],MetaData.blob_name(), 'bucket-proto1')
-            return make_response(jsonify({'Content': request.json["ZipFile"]}), 200)
+            Data = PackageData(JS,request.json["ZipFile"])
+            return make_response(jsonify({'metadata': MetaData.to_dict(),"data": Data.to_dict()}), 200)
         return {'description' : 'Not as expected'}
 
 

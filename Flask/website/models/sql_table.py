@@ -46,9 +46,10 @@ class Packages_table(db.Model):
     PULLREQUEST = db.Column(db.Float, nullable=True)
     NETSCORE = db.Column(db.Float, nullable=True)
     URL = db.Column(db.String(99),nullable = True)
+    JS = db.Column(db.String(1000),nullable = True)
 
 
-def add_package(Name,Version,ratings,URL):
+def add_package(Name,Version,ratings,URL,JS):
     new_package = Packages_table(
         NAME = Name,VERSION = Version,
         NETSCORE = ratings["NetScore"],
@@ -57,7 +58,8 @@ def add_package(Name,Version,ratings,URL):
         BUSFACTOR = ratings["BusFactor"],
         RESPONSIVEMAINTAINER = ratings["ResponsiveMaintainer"],
         LICENSESCORE = ratings["License"],
-        URL = URL
+        URL = URL,
+        JS = JS
         )
     db.session.add(new_package)
     db.session.commit()
