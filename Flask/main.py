@@ -20,7 +20,7 @@ load_dotenv()
 
 app = create_app()
 BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/'
-BASE = 'http://localhost:8080/'
+BASE = 'http://localhost:8000/'
 
 # Storing Files from memory onto Storage Bucket
 def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1'):
@@ -53,8 +53,8 @@ def downloadFromBucket(moduleName, bucketName='bucket-proto1'):
 
 
 app = create_app()
-BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/'
-# BASE = 'http://localhost:8000/'
+# BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/'
+BASE = 'http://localhost:8000/'
 
 
 @app.route("/")
@@ -153,5 +153,5 @@ def handleUploaded():
 
 if __name__ == "__main__":
     # app.register_blueprint(bp)
-    app.run(host="localhost", port=8080, debug=True)
+    app.run(host="localhost", port=8000, debug=True)
     # app.run()

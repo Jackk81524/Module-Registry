@@ -79,11 +79,11 @@ def query_all_packages():
     return db.session.query(Packages_table).all()
 
 def reset_all_packages():
-    # db.session.query(Packages_table).delete()
-    # db.session.commit()
-    pool = connect_with_connector()
-    with pool.connect() as conn:
-        conn.execute(text("TRUNCATE TABLE packages_table"))
+    db.session.query(Packages_table).delete()
+    db.session.commit()
+    # pool = connect_with_connector()
+    # with pool.connect() as conn:
+    #     conn.execute(text("TRUNCATE TABLE packages_table"))
 
 def reset_ID_packages(PackageID):
     ID = PackageID.ID

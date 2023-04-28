@@ -1,5 +1,5 @@
-from flask import Flask, render_template, send_from_directory, request
-from flask_restful import Api, Resource, reqparse, abort
+from flask import Flask, render_template, send_from_directory, request, abort
+from flask_restful import Api, Resource, reqparse
 import re
 from enum import Enum
 import subprocess
@@ -25,14 +25,14 @@ def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1')
     #Ensure upload is succesful
     exists = Bucket(storage_client, bucket_name).exists()
     if exists:
-        print(f"{destination_blob_name} with contents {contents} uploaded to {bucket_name}.")
+        # print(f"{destination_blob_name} with contents {contents} uploaded to {bucket_name}.")
         return 1
     else:
         print("Error: Module not updated")
         return 0
 
 def download_fromURL(URL):
-    
+    token = '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'
     urls = URL.split("/")
     api_url = urls[0] + '//api.' + urls[2] + '/repos/' + urls[3] + "/" + urls[4]
     filename = urls.pop()
@@ -80,7 +80,11 @@ def extract_packageURL(ZipFile):
 
 def uploadRatings(Name,Version,ratings,URL,trusted = False):
     if trusted:
-        add_package(Name,Version,ratings,URL)
+        try:
+            add_package(Name,Version,ratings,URL)
+        except:
+            abort(409, "Package exists already")
+
         return True
     else:
         for metric,score in ratings.items():
@@ -100,7 +104,8 @@ def rate_Package(URL):
     result = subprocess.run(['/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/run', "url.txt"],capture_output = True, text = True)
     output = result.stdout
     os.chdir("/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/Flask/")
-    if output != None:
+    print('o',output)
+    if output != '' and output != None:
         return json.loads(output)
     else:
         return {"URL":URL,"NetScore":-1,"RampUp":-1,"Correctness":-1,"BusFactor":-1,"ResponsiveMaintainer":-1,"License":-1}
@@ -151,6 +156,9 @@ class PackageMetadata:
         if ID == True:
             resource_fields["ID"] = self.ID
         return resource_fields
+    
+    def blob_name(self):
+        return self.Name.Name + '-' + self.Version.Version
 
 class PackageID:
     def __init__(self, ID):
