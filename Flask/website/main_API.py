@@ -14,7 +14,7 @@ class PackagesList(Resource):
         PackagesToQuery = request.json
         if(len(PackagesToQuery) > 50):
             return json.dumps({'message' : 'Too many packages returned.'}), 413
-        offset = EnumerateOffset(request)
+        offset = EnumerateOffset(request).offset
         output = []
         if(len(PackagesToQuery) == 1 and PackagesToQuery[0] == "*"):
             Queried = query_all_packages()
@@ -31,13 +31,11 @@ class PackagesList(Resource):
                 for data in Queried:
                     QueriedMetaData = PackageMetadata(data.NAME,data.VERSION,data.ID)
                     output.append(QueriedMetaData.to_dict())
-        
         return json.dumps(output), 200
 
 
 class RegistryReset(Resource):
     def delete(self):
-        from Flask.website.models.sql_table import reset_all_packages
         reset_all_packages()
         return make_response(jsonify({'description': 'Registry is reset.'}), 200)
 
