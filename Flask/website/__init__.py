@@ -7,6 +7,7 @@ from google.cloud.sql.connector import Connector, IPTypes
 from website.models.sql_table import Packages_table, add_package
 import requests
 import os
+import pg8000
 import pymysql
 
 #
