@@ -23,12 +23,6 @@ app = create_app()
 BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/'
 BASE = 'http://localhost:8000/'
 
-
-app = create_app()
-BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/'
-# BASE = 'http://localhost:8000/'
-
-
 @app.route("/")
 def defaultPage():
     return render_template('mainPage.html')
