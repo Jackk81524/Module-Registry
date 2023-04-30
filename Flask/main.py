@@ -1,23 +1,21 @@
-from Flask.website import create_app
-from flask import request, render_template, send_from_directory
+from website import create_app
+from flask import Flask, request, render_template, send_from_directory, jsonify
 import requests
 from flask_restful import abort
 import json
+from google.cloud import storage
+from google.cloud.storage import Bucket
 import base64
+import zipfile
+import os
 from dotenv import load_dotenv
 import ast
 load_dotenv()
 
 
-# ONLY for testing purposes on local machine. Private Key Grab and Authentication ONLY required to test on local machine. You need to have pKey.json in directory for below code to run.
-# storage_client = storage.Client.from_service_account_json('pKey.json')
-
-# Authentication Step for Google Cloud Storage Services
-# storage_client = storage.Client()
-
 app = create_app()
 BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/'
-BASE = 'http://localhost:8000/'
+#BASE = 'http://localhost:8080/'
 
 @app.route("/")
 def defaultPage():
@@ -113,5 +111,5 @@ def handleUploaded():
 
 if __name__ == "__main__":
     # app.register_blueprint(bp)
-    app.run(host="localhost", port=8000, debug=False)
+    app.run(host="localhost", port=8080, debug=True)
     # app.run()

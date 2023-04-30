@@ -1,5 +1,7 @@
-from flask import request, make_response, jsonify
-from flask_restful import Resource
+from flask import Flask, render_template, send_from_directory, request, make_response, jsonify, abort
+from flask_restful import Api, Resource, reqparse
+from website.models.sql_table import *
+from website.components_API import *
 import json
 import base64
 import io
@@ -70,6 +72,7 @@ class PackageCreate(Resource):
     def post(self):
         JS = request.json["JSProgram"]
         if "URL" in request.json and request.json["URL"] != None:
+            print("here url")
             URL = request.json["URL"]
             MetaData = get_packageJson(URL)
             ratings = rate_Package(URL)
@@ -80,6 +83,7 @@ class PackageCreate(Resource):
             Data = PackageData(JS,ZipFile)
             return make_response(jsonify({'metadata': MetaData.to_dict(),"data": Data.to_dict()}), 200)
         elif "ZipFile" in request.json and request.json["ZipFile"] != None:
+            print("here zip")
             ZipFile_bytes = base64.b64decode(request.json["ZipFile"].encode('utf-8'))
             ZipFile_buffer = io.BytesIO(ZipFile_bytes)
             #MetaData, URL = extract_packageURL(ZipFile_buffer)
