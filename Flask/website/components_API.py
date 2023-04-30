@@ -32,7 +32,7 @@ def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1')
         return 0
 
 def download_fromURL(URL):
-    token = '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'
+    token = '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'
     urls = URL.split("/")
     api_url = urls[0] + '//api.' + urls[2] + '/repos/' + urls[3] + "/" + urls[4]
     filename = urls.pop()

@@ -68,7 +68,7 @@ class PackageCreate(Resource):
             URL = request.json["URL"]
             MetaData = get_packageJson(URL)
             ratings = rate_Package(URL)
-            uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,JS,trusted=False)
+            uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,JS,trusted=True)
             ZipFile = download_fromURL(URL)
             ZipFile = base64.b64encode(ZipFile.read()).decode('utf-8')
             uploadToBucket(ZipFile,MetaData.blob_name(), 'bucket-proto1')
