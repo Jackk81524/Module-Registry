@@ -4,7 +4,7 @@ import sqlalchemy
 from website.main_API import *
 from flask_sqlalchemy import SQLAlchemy
 from google.cloud.sql.connector import Connector, IPTypes
-from website.models.sql_table import Packages_table, add_package
+# from website.models.sql_table import db, Packages_table, add_package
 import requests
 import os
 import pymysql
@@ -57,7 +57,7 @@ def create_app():
         "creator": getconn
     }
 
-    db.init_app(app)
+    # db.init_app(app)
     return app
     
 
