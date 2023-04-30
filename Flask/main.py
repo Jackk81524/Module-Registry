@@ -26,7 +26,7 @@ BASE = 'http://localhost:8000/'
 
 app = create_app()
 BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/'
-BASE = 'http://localhost:8000/'
+# BASE = 'http://localhost:8000/'
 
 
 @app.route("/")
@@ -124,5 +124,5 @@ def handleUploaded():
 
 if __name__ == "__main__":
     # app.register_blueprint(bp)
-    app.run(host="localhost", port=8000, debug=True)
+    app.run(host="localhost", port=8080, debug=True)
     # app.run()
