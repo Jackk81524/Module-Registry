@@ -139,15 +139,15 @@ def rate_Package(URL):
     default = {"URL":URL,"NetScore":-1,"RampUp":-1,"Correctness":-1,"BusFactor":-1,"ResponsiveMaintainer":-1,"License":-1}
     if URL == None:
         return default
-    os.chdir('/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/')
+    service_url = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app'
+    os.chdir(service_url + '/run')
     f = open("url.txt","w")
     f.write(URL)
     f.close()
-    # subprocess.run(['/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/run','install'])
     subprocess.run(['run','build'])
-    result = subprocess.run(['/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/run', "url.txt"],capture_output = True, text = True)
+    result = subprocess.run([service_url + '/run', "url.txt"],capture_output = True, text = True)
     output = result.stdout
-    os.chdir("/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/Flask/")
+    os.chdir(service_url + "/Flask/")
     if output != '' and output != None:
         return json.loads(output)
     else:
