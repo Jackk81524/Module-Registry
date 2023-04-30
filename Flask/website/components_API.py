@@ -152,7 +152,6 @@ def rate_Package(URL):
     # if output != '' and output != None:
     #     return json.loads(output)
     # else:
-
     return default
 
 

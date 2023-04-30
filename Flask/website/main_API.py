@@ -86,11 +86,11 @@ class PackageCreate(Resource):
             print("here zip")
             ZipFile_bytes = base64.b64decode(request.json["ZipFile"].encode('utf-8'))
             ZipFile_buffer = io.BytesIO(ZipFile_bytes)
-            MetaData, URL = extract_packageURL(ZipFile_buffer)
-            ratings = rate_Package(URL)
-            uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,JS,trusted=True)
+            #MetaData, URL = extract_packageURL(ZipFile_buffer)
+            #ratings = rate_Package(URL)
+            #uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,JS,trusted=True)
             uploadToBucket(request.json["ZipFile"],MetaData.blob_name(), 'bucket-proto1')
-            Data = PackageData(JS,request.json["ZipFile"])
+            #Data = PackageData(JS,request.json["ZipFile"])
             return make_response(jsonify({'metadata': MetaData.to_dict(),"data": Data.to_dict()}), 200)
         return {'description' : 'Not as expected'}
 
