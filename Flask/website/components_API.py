@@ -34,7 +34,12 @@ def OffsetReturn(output,offset):
     return output[startIndex:endIndex]
 
 def downloadFromBucket(moduleName, bucketName='bucket-proto1'):
-    storage_client = storage.Client.from_service_account_json('pKey.json')
+    # ONLY for testing purposes on local machine. Private Key Grab and Authentication ONLY required to test on local machine. You need to have pKey.json in directory for below code to run.
+    # storage_client = storage.Client.from_service_account_json('pKey.json')
+
+    # Authentication Step for Google Cloud Storage Services
+    storage_client = storage.Client()
+
     # exists = Bucket(storage_client, moduleName).exists()
     bucket = storage_client.bucket(bucketName)
     blob = bucket.blob(moduleName)
