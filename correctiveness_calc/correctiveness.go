@@ -10,7 +10,7 @@ import (
 
 func Correctiveness(issues *[]responsiveness.RepoIssue) float32 {
 	if issues == nil {
-		return 0
+		return 0.5
 	}
 	var openedIssues []map[string]interface{}
 	var closedIssues []map[string]interface{}
@@ -87,7 +87,7 @@ func calculateCorrectnessScoreFromIssues(openedIssues []map[string]interface{}, 
 	// Calculate the average duration of opened and closed issues.
 	var avgOpenDuration float64
 	if len(openedIssues) > 0 {
-		avgOpenDuration++
+		avgOpenDuration = ((totalClosedDuration + totalOpenDuration) / 2)
 	}
-	return avgOpenDuration / totalClosedDuration
+	return (avgOpenDuration)
 }
