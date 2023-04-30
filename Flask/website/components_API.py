@@ -13,6 +13,47 @@ import base64
 import io
 from google.cloud import storage
 from google.cloud.storage import Bucket
+from dotenv import load_dotenv
+
+def OffsetReturn(output,offset):
+    perPage = 15
+    length = len(output)
+    if(length < perPage and offset > 1):
+        return []
+    elif length < perPage:
+        return output
+    else:
+        startIndex = (offset-1) * perPage
+        endIndex = (startIndex) + perPage
+        if startIndex > (length-1):
+            return []
+        elif endIndex > (length-1):
+            endIndex = length - 1
+    if(startIndex==endIndex):
+        return [output[startIndex]]
+    return output[startIndex:endIndex]
+
+def downloadFromBucket(moduleName, bucketName='bucket-proto1'):
+    storage_client = storage.Client.from_service_account_json('pKey.json')
+    # exists = Bucket(storage_client, moduleName).exists()
+    bucket = storage_client.bucket(bucketName)
+    blob = bucket.blob(moduleName)
+    if blob.exists():
+        # address = "https://storage.googleapis.com/"
+        # address += bucketName + '/'
+        # address += moduleName
+        # # address = 'https://storage.googleapis.com/bucket-proto1/lodash-5.0.0'
+        # return address
+        b = blob.download_as_string()
+        string = b.decode('utf-8')
+        ZipFile_bytes = base64.b64decode(string.encode('utf-8'))
+        ZipFile = io.BytesIO(ZipFile_bytes)
+        MetaData, URL = extract_packageURL(ZipFile)
+        return PackageData(None,string, URL)
+
+    else:
+        print("Error: Module not found")
+        return 0
 
 def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1'):
     # storage_client = storage.Client()
@@ -32,7 +73,7 @@ def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1')
         return 0
 
 def download_fromURL(URL):
-    token = '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'
+    token = os.getenv("GITHUB_TOKEN")
     urls = URL.split("/")
     api_url = urls[0] + '//api.' + urls[2] + '/repos/' + urls[3] + "/" + urls[4]
     filename = urls.pop()
@@ -215,12 +256,14 @@ class PackageData:
         self.URL = URL
         self.JSProgram = JSProgram
 
-    def to_dict(self):
+    def to_dict(self,URL_check = False):
         resource_fields = {
             'Content': self.content
         }
         if self.JSProgram != None:
             resource_fields["JSProgram"] = self.JSProgram
+        if URL_check == True and self.URL != None:
+            resource_fields["URL"] = self.URL 
         return resource_fields
 
 

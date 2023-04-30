@@ -12,7 +12,7 @@ import io
 class PackagesList(Resource):
     def post(self):
         PackagesToQuery = request.json
-        if(len(PackagesToQuery) > 50):
+        if(len(PackagesToQuery) > 100):
             return json.dumps({'message' : 'Too many packages returned.'}), 413
         offset = EnumerateOffset(request).offset
         output = []
@@ -31,7 +31,8 @@ class PackagesList(Resource):
                 for data in Queried:
                     QueriedMetaData = PackageMetadata(data.NAME,data.VERSION,data.ID)
                     output.append(QueriedMetaData.to_dict())
-        return json.dumps(output), 200
+        ret = OffsetReturn(output,int(offset))
+        return json.dumps(ret), 200
 
 
 class RegistryReset(Resource):
@@ -41,20 +42,27 @@ class RegistryReset(Resource):
 
 class Package(Resource):
     def get(self,id):
-        ID = PackageID(id)
-        Info = query_byID(ID)[0]
+        ID = PackageID(id).ID
+        Info = query_byID(ID)
+        if Info != []:
+            Info = Info[0]
+        else:
+            return make_response(jsonify({'description' : 'Package does not exist.'}),404)
         MetaData = PackageMetadata(Info.NAME,Info.VERSION,Info.ID) 
-        ## Need Package DataR
-        return make_response(jsonify({'value' : {'metadata' : MetaData.to_dict(ID=True)}}),200)
+        Data = downloadFromBucket(MetaData.blob_name())
+        return make_response(jsonify({'value' : [{'metadata' : MetaData.to_dict(ID = True)},{'data' : Data.to_dict(URL_check=True)}]}),200)
+    
+    def put(self,id):
+        ID = PackageID(id).ID
+        MetaData = request.json["MetaData"]
+        MetaData = request.json["metadata"]
+        Data = request.json["data"]
+        response2 = delete_by_id(ID)
+        if response2.error_status == 404:
+            return response2.json()
+        update = requests.post(BASE + 'package',json=jsonify(Data), headers=headers)
+        return {"description" : "Version is updated"}
 
-    # Need to access buckets to update     
-    # def put(self,id):
-    #     ID = PackageID(id)
-    #     Packages_update_args = MetaData_reqparse()
-    #     ## One more field, but need to ask about package data
-    #     args = Packages_update_args.parse_args()
-    #     ## Name, Version, and ID must match, update package contents
-    #     return {"description" : "Version is updated"}
     def delete(self,id):
         ID = PackageID(id)
         reset_ID_packages(ID)
@@ -94,15 +102,6 @@ class PackageRate(Resource):
         return {'description':'Return the rating. Only use this if each metric was computed successfully.'}
 
 # class CreateAuthToken(Resource):
-
-class PackageHistory(Resource):
-    def get(self,Name):
-        ## Need to authenticate and retrieve info
-        ## Output using PackageHistoryEntry class
-        return 200
-    def delete(self,Name):
-        ## Delete all versions of package with this name
-        return 200
 
 class PackageByRegExGet(Resource):
     def post(self,regex):

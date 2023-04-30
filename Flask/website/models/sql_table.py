@@ -31,70 +31,77 @@ def connect_with_connector() -> sqlalchemy.engine.base.Engine:
     )
     return pool
 
-# db = SQLAlchemy()
+db = SQLAlchemy()
 
-# class Packages_table(db.Model):
-#     ID = db.Column(db.Integer, primary_key=True, nullable=False,autoincrement=True)
-#     NAME = db.Column(db.String(255), unique=True, nullable=True)
-#     VERSION = db.Column(db.String(50), nullable=True)
-#     RAMPUP = db.Column(db.Float, nullable=True)
-#     CORRECTNESS = db.Column(db.Float, nullable=True)
-#     BUSFACTOR = db.Column(db.Float, nullable=True)
-#     RESPONSIVEMAINTAINER = db.Column(db.Float, nullable=True)
-#     LICENSESCORE = db.Column(db.Float, nullable=True)
-#     GOODPINNINGPRACTICE = db.Column(db.Float, nullable=True)
-#     PULLREQUEST = db.Column(db.Float, nullable=True)
-#     NETSCORE = db.Column(db.Float, nullable=True)
-#     URL = db.Column(db.String(99),nullable = True)
-#     JS = db.Column(db.String(1000),nullable = True)
+class Packages_table(db.Model):
+    ID = db.Column(db.Integer, primary_key=True, nullable=False,autoincrement=True)
+    NAME = db.Column(db.String(255), unique=True, nullable=True)
+    VERSION = db.Column(db.String(50), nullable=True)
+    RAMPUP = db.Column(db.Float, nullable=True)
+    CORRECTNESS = db.Column(db.Float, nullable=True)
+    BUSFACTOR = db.Column(db.Float, nullable=True)
+    RESPONSIVEMAINTAINER = db.Column(db.Float, nullable=True)
+    LICENSESCORE = db.Column(db.Float, nullable=True)
+    GOODPINNINGPRACTICE = db.Column(db.Float, nullable=True)
+    PULLREQUEST = db.Column(db.Float, nullable=True)
+    NETSCORE = db.Column(db.Float, nullable=True)
+    URL = db.Column(db.String(99),nullable = True)
+    JS = db.Column(db.String(1000),nullable = True)
 
 
-# def add_package(Name,Version,ratings,URL,JS):
-#     new_package = Packages_table(
-#         NAME = Name,VERSION = Version,
-#         NETSCORE = ratings["NetScore"],
-#         RAMPUP = ratings["RampUp"],
-#         CORRECTNESS = ratings["Correctness"],
-#         BUSFACTOR = ratings["BusFactor"],
-#         RESPONSIVEMAINTAINER = ratings["ResponsiveMaintainer"],
-#         LICENSESCORE = ratings["License"],
-#         URL = URL,
-#         JS = JS
-#         )
-#     db.session.add(new_package)
-#     db.session.commit()
+def add_package(Name,Version,ratings,URL,JS):
+    new_package = Packages_table(
+        NAME = Name,VERSION = Version,
+        NETSCORE = ratings["NetScore"],
+        RAMPUP = ratings["RampUp"],
+        CORRECTNESS = ratings["Correctness"],
+        BUSFACTOR = ratings["BusFactor"],
+        RESPONSIVEMAINTAINER = ratings["ResponsiveMaintainer"],
+        LICENSESCORE = ratings["License"],
+        URL = URL,
+        JS = JS
+        )
+    db.session.add(new_package)
+    db.session.commit()
 
-# def query_package(Query):
-#     Name = Query.Name.Name
-#     Version = Query.Version.Version
-#     if Version == None:
-#         result = db.session.query(Packages_table).filter_by(NAME = Name).all()
-#     else:
-#         result = db.session.query(Packages_table).filter_by(NAME = Name,VERSION=Version).all()
-#     return result
+def query_package(Query):
+    Name = Query.Name.Name
+    Version = Query.Version.Version
+    if Version == None:
+        result = db.session.query(Packages_table).filter_by(NAME = Name).all()
+    else:
+        result = db.session.query(Packages_table).filter_by(NAME = Name,VERSION=Version).all()
+    return result
 
-# def query_byID(PackageID):
-#     ID = PackageID.ID
-#     return db.session.query(Packages_table).filter_by(ID = ID).all()
+def query_byID(ID):
+    return db.session.query(Packages_table).filter_by(ID = ID).all()
 
-# def query_all_packages():
-#     return db.session.query(Packages_table).all()
+def query_all_packages():
+    return db.session.query(Packages_table).all()
+
+def delete_by_id(ID):
+    Exists = db.session.query(Packages_table).filter_by(ID=ID).all()
+    if Exists != []:
+        db.session.delete(Packages_table).filter_by(ID=ID).all()
+        db.session.commit()
+    else:
+        return make_response(jsonify({'desciption' : 'Package does not exist.'}), 404)
 
 def reset_all_packages():
-    # db.session.query(Packages_table).delete()
-    # db.session.commit()
-    pool = connect_with_connector()
-    with pool.connect() as conn:
-        conn.execute(text("TRUNCATE TABLE packages_table"))
+    db.session.query(Packages_table).delete()
+    db.session.commit()
+    # pool = connect_with_connector()
+    # with pool.connect() as conn:
+    #     conn.execute(text("TRUNCATE TABLE packages_table"))
 
-# def reset_ID_packages(PackageID):
-#     ID = PackageID.ID
-#     db.session.query(Packages_table).filter_by(ID=ID).delete()
-#     db.session.commit()
+def reset_ID_packages(PackageID):
+    ID = PackageID.ID
+    db.session.query(Packages_table).filter_by(ID=ID).delete()
+    db.session.commit()
 
-# def query_ratings(PackageID):
-#     ID = PackageID.ID
-#     return db.session.query(Packages_table).filter_by(ID=ID).all()
+def query_ratings(PackageID):
+    ID = PackageID.ID
+    return db.session.query(Packages_table).filter_by(ID=ID).all()
 
     
 

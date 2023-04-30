@@ -23,22 +23,10 @@ app = create_app()
 BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/'
 BASE = 'http://localhost:8000/'
 
-def downloadFromBucket(moduleName, bucketName='bucket-proto1'):
-    exists = Bucket(storage_client, moduleName).exists()
-    if exists:
-        address = "https://storage.googleapis.com/"
-        address += bucketName + '/'
-        address += moduleName
-        return address
-
-    else:
-        print("Error: Module not found")
-        return 0
-
 
 app = create_app()
 BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/'
-# BASE = 'http://localhost:8000/'
+BASE = 'http://localhost:8000/'
 
 
 @app.route("/")
@@ -55,11 +43,12 @@ def packagesListInput():
 @app.route("/packagesList", methods=["POST"])
 def packagesListDisplay():
     data = request.form.get("Query")
+    offset = request.form.get("Offset")
     headers = {'Content-Type': 'application/json'}
     if data == "[*]":
-        response = requests.post(BASE + 'packages', json=["*"], headers=headers)
+        response = requests.post(BASE + f'packages?offset={offset}', json=["*"], headers=headers)
     else:
-        response = requests.post(BASE + 'packages', json=json.loads(data), headers=headers)
+        response = requests.post(BASE + f'packages?offset={offset}', json=json.loads(data), headers=headers)
     items = ast.literal_eval(response.json())
     if response.status_code == 413:
         return response.json()
