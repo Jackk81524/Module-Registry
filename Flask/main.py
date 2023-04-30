@@ -20,8 +20,8 @@ load_dotenv()
 storage_client = storage.Client()
 
 app = create_app()
-#BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/'
-BASE = 'http://localhost:8080/'
+BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/'
+#BASE = 'http://localhost:8080/'
 
 @app.route("/")
 def defaultPage():
