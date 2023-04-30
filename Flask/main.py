@@ -17,7 +17,7 @@ load_dotenv()
 # storage_client = storage.Client.from_service_account_json('pKey.json')
 
 # Authentication Step for Google Cloud Storage Services
-# storage_client = storage.Client()
+storage_client = storage.Client()
 
 app = create_app()
 #BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/'
