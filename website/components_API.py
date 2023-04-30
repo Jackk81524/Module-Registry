@@ -145,9 +145,10 @@ def rate_Package(URL):
     f.write(URL)
     f.close()
     # subprocess.run(['/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/run','install'])
-    subprocess.run(['run','build'])
-    result = subprocess.run(['/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/Flask/run', "url.txt"],capture_output = True, text = True)
+    subprocess.run(['./run','build'])
+    result = subprocess.run(['./run', "url.txt"],capture_output = True, text = True)
     output = result.stdout
+    print('out',output)
     # os.chdir("/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/Flask/")
     if output != '' and output != None:
         return json.loads(output)
@@ -296,4 +297,6 @@ class Action(Enum):
     UPDATE = 'UPDATE'
     DOWNLOAD = 'DOWNLOAD'
     RATE = 'RATE'
+
+
 
