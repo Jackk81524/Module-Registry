@@ -6,9 +6,12 @@ import pymysql
 
 def connect_with_connector() -> sqlalchemy.engine.base.Engine:
     instance_connection_name = "module-registry-ece461:us-central1:ece461-module-registry"
-    db_user = "461-user"  # e.g. 'my-db-user'
-    db_pass = "461-test"  # e.g. 'my-db-password'
-    db_name = "Module-Registry"  # e.g. 'my-database'
+    # db_user = "461-user"  # e.g. 'my-db-user'
+    # db_pass = "461-test"  # e.g. 'my-db-password'
+    # db_name = "Module-Registry"  # e.g. 'my-database'
+    db_user = os.environ["DB_USER"]
+    db_pass = os.environ["DB_PASS"]
+    db_name = os.environ["DB_NAME"]
 
     ip_type = IPTypes.PUBLIC
 
