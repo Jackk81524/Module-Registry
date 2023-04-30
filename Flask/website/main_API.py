@@ -8,7 +8,6 @@ import io
 # from main import storage_client
 
 
-### /packages endpoint
 class PackagesList(Resource):
     def post(self):
         PackagesToQuery = request.json

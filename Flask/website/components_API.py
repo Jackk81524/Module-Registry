@@ -138,21 +138,22 @@ def uploadRatings(Name,Version,ratings,URL,JS = None,trusted = False):
 
 def rate_Package(URL):
     default = {"URL":URL,"NetScore":-1,"RampUp":-1,"Correctness":-1,"BusFactor":-1,"ResponsiveMaintainer":-1,"License":-1}
-    if URL == None:
-        return default
-    # os.chdir('/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/')
-    f = open("url.txt","w")
-    f.write(URL)
-    f.close()
-    # subprocess.run(['/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/run','install'])
-    subprocess.run(['run','build'])
-    result = subprocess.run(['run', "url.txt"],capture_output = True, text = True)
-    output = result.stdout
-    # os.chdir("/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/Flask/")
-    if output != '' and output != None:
-        return json.loads(output)
-    else:
-        return default
+    # if URL == None:
+    #     return default
+    # # os.chdir('/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/')
+    # f = open("url.txt","w")
+    # f.write(URL)
+    # f.close()
+    # # subprocess.run(['/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/run','install'])
+    # subprocess.run(['run','build'])
+    # result = subprocess.run(['run', "url.txt"],capture_output = True, text = True)
+    # output = result.stdout
+    # # os.chdir("/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/Flask/")
+    # if output != '' and output != None:
+    #     return json.loads(output)
+    # else:
+
+    return default
 
 
 def MetaData_reqparse():
