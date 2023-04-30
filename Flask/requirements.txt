@@ -33,6 +33,3 @@ python-dotenv==1.0.0
 
 # https://pypi.org/project/google-cloud-storage/
 google-cloud-storage==2.8.0
-
-# https://pypi.org/project/pg8000/
-pg8000==1.29.4

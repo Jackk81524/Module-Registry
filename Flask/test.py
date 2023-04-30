@@ -1,7 +1,7 @@
 from website.components_API import *
 import requests
 
-BASE = 'http://localhost:8000/'
+BASE = 'http://localhost:8080/'
 # BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/'
 test = ['https://github.com/lodash/lodash',
 'https://github.com/chalk/chalk',

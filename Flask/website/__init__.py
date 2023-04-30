@@ -18,7 +18,7 @@ def getconn():
             user="461-user",
             password="461-test",
             db="Module-Registry",
-            ip_type= IPTypes.PUBLIC
+            ip_type=IPTypes.PUBLIC
         )
         return conn
 
