@@ -49,36 +49,36 @@ def connect_with_connector() -> sqlalchemy.engine.base.Engine:
 #     JS = db.Column(db.String(1000),nullable = True)
 
 
-def add_package(Name,Version,ratings,URL,JS):
-    new_package = Packages_table(
-        NAME = Name,VERSION = Version,
-        NETSCORE = ratings["NetScore"],
-        RAMPUP = ratings["RampUp"],
-        CORRECTNESS = ratings["Correctness"],
-        BUSFACTOR = ratings["BusFactor"],
-        RESPONSIVEMAINTAINER = ratings["ResponsiveMaintainer"],
-        LICENSESCORE = ratings["License"],
-        URL = URL,
-        JS = JS
-        )
-    db.session.add(new_package)
-    db.session.commit()
+# def add_package(Name,Version,ratings,URL,JS):
+#     new_package = Packages_table(
+#         NAME = Name,VERSION = Version,
+#         NETSCORE = ratings["NetScore"],
+#         RAMPUP = ratings["RampUp"],
+#         CORRECTNESS = ratings["Correctness"],
+#         BUSFACTOR = ratings["BusFactor"],
+#         RESPONSIVEMAINTAINER = ratings["ResponsiveMaintainer"],
+#         LICENSESCORE = ratings["License"],
+#         URL = URL,
+#         JS = JS
+#         )
+#     db.session.add(new_package)
+#     db.session.commit()
 
-def query_package(Query):
-    Name = Query.Name.Name
-    Version = Query.Version.Version
-    if Version == None:
-        result = db.session.query(Packages_table).filter_by(NAME = Name).all()
-    else:
-        result = db.session.query(Packages_table).filter_by(NAME = Name,VERSION=Version).all()
-    return result
+# def query_package(Query):
+#     Name = Query.Name.Name
+#     Version = Query.Version.Version
+#     if Version == None:
+#         result = db.session.query(Packages_table).filter_by(NAME = Name).all()
+#     else:
+#         result = db.session.query(Packages_table).filter_by(NAME = Name,VERSION=Version).all()
+#     return result
 
-def query_byID(PackageID):
-    ID = PackageID.ID
-    return db.session.query(Packages_table).filter_by(ID = ID).all()
+# def query_byID(PackageID):
+#     ID = PackageID.ID
+#     return db.session.query(Packages_table).filter_by(ID = ID).all()
 
-def query_all_packages():
-    return db.session.query(Packages_table).all()
+# def query_all_packages():
+#     return db.session.query(Packages_table).all()
 
 def reset_all_packages():
     # db.session.query(Packages_table).delete()
@@ -87,14 +87,14 @@ def reset_all_packages():
     with pool.connect() as conn:
         conn.execute(text("TRUNCATE TABLE packages_table"))
 
-def reset_ID_packages(PackageID):
-    ID = PackageID.ID
-    db.session.query(Packages_table).filter_by(ID=ID).delete()
-    db.session.commit()
+# def reset_ID_packages(PackageID):
+#     ID = PackageID.ID
+#     db.session.query(Packages_table).filter_by(ID=ID).delete()
+#     db.session.commit()
 
-def query_ratings(PackageID):
-    ID = PackageID.ID
-    return db.session.query(Packages_table).filter_by(ID=ID).all()
+# def query_ratings(PackageID):
+#     ID = PackageID.ID
+#     return db.session.query(Packages_table).filter_by(ID=ID).all()
 
     
 
