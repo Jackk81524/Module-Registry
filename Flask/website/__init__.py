@@ -1,13 +1,6 @@
-from flask import Flask
-from flask_restful import Api, Resource
-import sqlalchemy
-from website.main_API import *
-from flask_sqlalchemy import SQLAlchemy
+from Flask.website.main_API import *
 from google.cloud.sql.connector import Connector, IPTypes
-from website.models.sql_table import db, Packages_table, add_package
-import requests
-import os
-import pymysql
+from Flask.website.models.sql_table import db
 
 
 def getconn():

@@ -1,7 +1,5 @@
-from website.__init__ import create_app
-import json
-from flask import Blueprint, send_from_directory, render_template,  request,jsonify
-from website.main_API import *
+from flask import Blueprint, send_from_directory
+from Flask.website.main_API import *
 import requests
 from flask_restful import abort
 
@@ -12,7 +10,7 @@ BASE = 'http://127.0.0.1:5000/'
 # Get request that renders html file that takes array as package input
 @bp.route("/packagesListInput")
 def packagesListInput():
-    return send_from_directory('templates','packages.html')
+    return send_from_directory('templates', 'packages.html')
 
 # Post request that retrieves array from /pacakgesListInput, called under action in html file
 @bp.route("/packagesList",methods = ["POST"])
@@ -29,7 +27,7 @@ def packagesListDisplay():
 
 @bp.route("/toResetRegistry")
 def checkReset():
-    return send_from_directory('templates','reset.html')
+    return send_from_directory('templates', 'reset.html')
 
 @bp.route("/RegistryReset",methods=["POST","DELETE"])
 def ResetRegistry():
@@ -38,7 +36,7 @@ def ResetRegistry():
 
 @bp.route("/getPackageID")
 def getID():
-    return send_from_directory('templates','packageID.html')
+    return send_from_directory('templates', 'packageID.html')
 
 @bp.route("/packageIDQuery",methods=["POST","GET"])
 def displayID():
@@ -54,7 +52,7 @@ def deleteID():
 
 @bp.route("/packageRateID")
 def getRateID():
-    return send_from_directory('templates','rateID.html')
+    return send_from_directory('templates', 'rateID.html')
 
 @bp.route("/packageIDDelete",methods=["POST","DELETE"])
 def RateID():

@@ -8,7 +8,7 @@ RUN wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O /usr/loca
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
 # Copy the rest of the application code into the container at /app
-COPY . /Flask
+COPY .. /Flask
 GOOGLE_ENTRYPOINT ["python", "main.py"]
 # Expose the port that the application will run on
 EXPOSE 8080

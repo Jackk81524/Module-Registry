@@ -1,4 +1,3 @@
-from website.components_API import *
 import requests
 
 BASE = 'http://localhost:8000/'

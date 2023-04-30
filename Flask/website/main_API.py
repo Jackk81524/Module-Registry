@@ -1,7 +1,5 @@
-from flask import Flask, render_template, send_from_directory, request, make_response, jsonify, abort
-from flask_restful import Api, Resource, reqparse
-from website.models.sql_table import *
-from website.components_API import *
+from flask import request, make_response, jsonify
+from flask_restful import Resource
 import json
 import base64
 import io
