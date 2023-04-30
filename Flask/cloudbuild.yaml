@@ -1,0 +1,9 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us.gcr.io/module-registry-ece461/module-registry', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us.gcr.io/module-registry-ece461/module-registry']
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: 'gcloud'
+  args: ['compute', 'instances', 'create-with-container',  '--container-image', 'us-central1-docker.pkg.dev/module-registry-ece461/cloud-run-source-deploy', '--metadata', 'google-logging-enabled=true,instance-name=ece461-module-registry,sql-instance=module-registry-ece461:us-central1:ece461-module-registry,sql-database=Module-Registry,sql-user=461-user,sql-password=461-test']
+     
