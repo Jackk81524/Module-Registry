@@ -8,5 +8,5 @@ import (
 
 // main function will handle the command line arguments
 func main() {
-  fmt.Println();
+  fmt.Println()
 }
