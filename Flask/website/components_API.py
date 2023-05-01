@@ -62,8 +62,8 @@ def OffsetReturn(output,offset):
     return output[startIndex:endIndex]
 
 def downloadFromBucket(moduleName, bucketName='bucket-proto1'):
-    # storage_client = storage.Client.from_service_account_json('pKey.json')
-    storage_client = storage.Client()
+    storage_client = storage.Client.from_service_account_json('pKey.json')
+    # storage_client = storage.Client()
     # exists = Bucket(storage_client, moduleName).exists()
     bucket = storage_client.bucket(bucketName)
     blob = bucket.blob(moduleName)
@@ -85,8 +85,8 @@ def downloadFromBucket(moduleName, bucketName='bucket-proto1'):
         return 0
 
 def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1'):
-    # storage_client = storage.Client.from_service_account_json('pKey.json')
-    storage_client = storage.Client()
+    storage_client = storage.Client.from_service_account_json('pKey.json')
+    # storage_client = storage.Client()
     # destination_blob_name = "storage-object-name"
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(destination_blob_name)
@@ -102,7 +102,7 @@ def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1')
         return 0
 
 def download_fromURL(URL):
-    token = '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'
+    token = os.getenv('GITHUB_TOKEN')
     urls = URL.split("/")
     api_url = urls[0] + '//api.' + urls[2] + '/repos/' + urls[3] + "/" + urls[4]
     filename = urls.pop()
