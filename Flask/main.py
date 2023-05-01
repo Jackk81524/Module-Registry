@@ -15,7 +15,7 @@ load_dotenv()
 
 app = create_app()
 BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/'
-# BASE = 'http://localhost:800/'
+BASE = 'http://localhost:8000/'
 
 @app.route("/")
 def defaultPage():
@@ -100,10 +100,10 @@ def handleUploaded():
     if len(URL) != 0 and ZipFile.read() != b"":
         abort(400)
     elif URL != "":
-        response = requests.post(BASE + 'package', json={'URL': URL, 'ZipFile': None, 'JSProgram': JS}, headers=headers)
+        response = requests.post(BASE + 'package', json={'URL': URL, 'Content': None, 'JSProgram': JS}, headers=headers)
     elif ZipFile != None:
         ZipFile_string = base64.b64encode(ZipFile.read()).decode('utf-8')
-        response = requests.post(BASE + 'package', json={'URL': None, 'ZipFile': ZipFile_string, 'JSProgram': JS}, headers=headers)
+        response = requests.post(BASE + 'package', json={'URL': None, 'oOntent': ZipFile_string, 'JSProgram': JS}, headers=headers)
     else:
         abort(501)
     return response.json(), response.status_code
@@ -111,5 +111,5 @@ def handleUploaded():
 
 if __name__ == "__main__":
     # app.register_blueprint(bp)
-    app.run(host="localhost", port=8080, debug=True)
+    app.run(host="localhost", port=8000, debug=True)
     # app.run()
