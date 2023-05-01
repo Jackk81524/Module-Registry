@@ -3,6 +3,7 @@ from sqlalchemy import text
 import sqlalchemy
 from google.cloud.sql.connector import Connector, IPTypes
 import pymysql
+from google.cloud import storage
 
 def connect_with_connector() -> sqlalchemy.engine.base.Engine:
     instance_connection_name = "module-registry-ece461:us-central1:ece461-module-registry"
@@ -91,7 +92,7 @@ def delete_by_id(ID):
         return make_response(jsonify({'desciption' : 'Package does not exist.'}), 404)
 
 def reset_all_packages():
-    client = storage.Client.from_service_account_json('pKey.json')
+    client = storage.Client()
     bucket = client.bcket('bucket-proto1')
     for blob in bucket.list_blobs():
         blob.delete()
