@@ -63,8 +63,10 @@ class Package(Resource):
         return {"description" : "Version is updated"}
 
     def delete(self,id):
-        ID = PackageID(id)
-        reset_ID_packages(ID)
+        ID = PackageID(id).ID
+        response = delete_by_id(ID)
+        if response.status_code == 404:
+             return make_response(jsonify({'desciption' : 'Package does not exist.'}), 404)
         return make_response(jsonify({'description': 'Package is deleted.'}), 200)
 
 
