@@ -21,6 +21,30 @@ import tempfile
 # Authentication Step for Google Cloud Storage Services
 # storage_client = storage.Client()
 
+# def updatePackage():
+#     JS = request.json["JSProgram"]
+#     if "URL" in request.json and request.json["URL"] != None:
+#         print("here url")
+#         URL = request.json["URL"]
+#         MetaData = get_packageJson(URL)
+#         ratings = rate_Package(URL)
+#         uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,JS,trusted=True)
+#         ZipFile = download_fromURL(URL)
+#         ZipFile = base64.b64encode(ZipFile.read()).decode('utf-8')
+#         uploadToBucket(ZipFile,MetaData.blob_name(), 'bucket-proto1')
+#         Data = PackageData(JS,ZipFile)
+#         return make_response(jsonify({'metadata': MetaData.to_dict(),"data": Data.to_dict()}), 200)
+#     elif "ZipFile" in request.json and request.json["ZipFile"] != None:
+#         print("here zip")
+#         ZipFile_bytes = base64.b64decode(request.json["ZipFile"].encode('utf-8'))
+#         ZipFile_buffer = io.BytesIO(ZipFile_bytes)
+#         #MetaData, URL = extract_packageURL(ZipFile_buffer)
+#         #ratings = rate_Package(URL)
+#         #uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,JS,trusted=True)
+#         uploadToBucket(request.json["ZipFile"],"MetaData.blob_name()", 'bucket-proto1')
+#         #Data = PackageData(JS,request.json["ZipFile"])
+#         return make_response(jsonify({'metadata': MetaData.to_dict(),"data": Data.to_dict()}), 200)
+
 def OffsetReturn(output,offset):
     perPage = 15
     length = len(output)
