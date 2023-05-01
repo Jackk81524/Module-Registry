@@ -146,8 +146,8 @@ def rate_Package(URL):
     if URL == None:
         return default
     # os.chdir('/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/')
-    os.chdir('..')
     with tempfile.NamedTemporaryFile(mode='w') as f:
+        os.chdir('..')
         f.write(URL)
         # subprocess.run(['/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/run','install'])
         subprocess.run(['run','build'])
