@@ -91,6 +91,10 @@ def delete_by_id(ID):
         return make_response(jsonify({'desciption' : 'Package does not exist.'}), 404)
 
 def reset_all_packages():
+    client = storage.Client.from_service_account_json('pKey.json')
+    bucket = client.bcket('bucket-proto1')
+    for blob in bucket.list_blobs():
+        blob.delete()
     db.session.query(Packages_table).delete()
     db.session.commit()
     # pool = connect_with_connector()
