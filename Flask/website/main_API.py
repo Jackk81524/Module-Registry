@@ -2,14 +2,31 @@ from flask import Flask, render_template, send_from_directory, request, make_res
 from flask_restful import Api, Resource, reqparse
 from website.models.sql_table import *
 from website.components_API import *
+import datetime
 import json
 import base64
 import io
 # from main import storage_client
+import logging
 
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - Input: %(input)s, Type: %(type)s, Time: %(time)s')
+
+console_handler = logging.StreamHandler()
+console_handler.setFormatter(formatter)
+logger.addHandler(console_handler)
+
+file_handler = logging.FileHandler('app.log')
+file_handler.setLevel(logging.INFO)
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
 
 class PackagesList(Resource):
     def post(self):
+        logger.info(f'Request_log: {request.path},{request.json},{request.method},{datetime.datetime.now()}')
         PackagesToQuery = request.json
         if(len(PackagesToQuery) > 100):
             return json.dumps({'message' : 'Too many packages returned.'}), 413
@@ -36,11 +53,13 @@ class PackagesList(Resource):
 
 class RegistryReset(Resource):
     def delete(self):
+        logger.info(f'Request_log: {request.path},{request.json},{request.method},{datetime.datetime.now()}')
         reset_all_packages()
         return make_response(jsonify({'description': 'Registry is reset.'}), 200)
 
 class Package(Resource):
     def get(self,id):
+        logger.info(f'Request_log: {request.path},{request.json},{request.method},{datetime.datetime.now()}')
         ID = PackageID(id).ID
         Info = query_byID(ID)
         if Info != []:
@@ -52,6 +71,7 @@ class Package(Resource):
         return make_response(jsonify({'value' : [{'metadata' : MetaData.to_dict(ID = True)},{'data' : Data.to_dict(URL_check=True)}]}),200)
     
     def put(self,id):
+        logger.info(f'Request_log: {request.path},{request.json},{request.method},{datetime.datetime.now()}')
         MetaData = request.json["metadata"]
         Data = request.json["data"]
         ID = PackageID(id).ID
@@ -63,6 +83,7 @@ class Package(Resource):
         return {"description" : "Version is updated"}
 
     def delete(self,id):
+        logger.info(f'Request_log: {request.path},{request.json},{request.method},{datetime.datetime.now()}')
         ID = PackageID(id).ID
         response = delete_by_id(ID)
         if response.status_code == 404:
@@ -72,6 +93,7 @@ class Package(Resource):
 
 class PackageCreate(Resource):
     def post(self):
+        logger.info(f'Request_log: {request.path},{request.json},{request.method},{datetime.datetime.now()}')
         JS = request.json["JSProgram"]
         if "URL" in request.json and request.json["URL"] != None:
             URL = request.json["URL"]
@@ -97,6 +119,7 @@ class PackageCreate(Resource):
 
 class PackageRate(Resource):
     def get(self,id):
+        logger.info(f'Request_log: {request.path},{request.json},{request.method},{datetime.datetime.now()}')
         ID = PackageID(id).ID
         Info = query_byID(ID)
         print(Info)
@@ -115,6 +138,7 @@ class PackageRate(Resource):
 
 class PackageByRegExGet(Resource):
     def post(self,regex):
+        logger.info(f'Request_log: {request.path},{request.json},{request.method},{datetime.datetime.now()}')
         ## use regex expression to search database
         ## Return a list of packages metadata
         return 200
