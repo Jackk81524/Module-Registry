@@ -145,14 +145,14 @@ def rate_Package(URL):
     default = {"URL":URL,"NetScore":-1,"RampUp":-1,"Correctness":-1,"BusFactor":-1,"ResponsiveMaintainer":-1,"License":-1}
     if URL == None:
         return default
+    print(os.getcwd())
     # os.chdir('/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/')
     with tempfile.NamedTemporaryFile(mode='w') as f:
-        os.chdir('..')
         f.write(URL)
-        # subprocess.run(['/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/run','install'])
-        subprocess.run(['run','build'])
-        result = subprocess.run(['run', f.name],capture_output = True, text = True)
+        subprocess.run(['cd','..','&&','run','build'])
+        # result = subprocess.run([file_path, f.name],capture_output = True, text = True)
         output = result.stdout
+        print(output)
     # os.chdir("/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/Flask/")
     if output != '' and output != None:
         return json.loads(output)
