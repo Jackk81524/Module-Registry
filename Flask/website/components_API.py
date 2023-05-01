@@ -175,9 +175,10 @@ def rate_Package(URL):
         subprocess.run(['./run','build'])
         result = subprocess.run(['./run', f.name],capture_output = True, text = True)
         output = result.stdout
-        print(output)
+        print('out',output)
     # os.chdir("/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/Flask/")
     if output != '' and output != None:
+        print('out',output)
         return json.loads(output)
     # else:
     return default
