@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 # storage_client = storage.Client.from_service_account_json('pKey.json')
 
 # Authentication Step for Google Cloud Storage Services
-storage_client = storage.Client()
+# storage_client = storage.Client()
 
 def OffsetReturn(output,offset):
     perPage = 15
@@ -40,6 +40,7 @@ def OffsetReturn(output,offset):
     return output[startIndex:endIndex]
 
 def downloadFromBucket(moduleName, bucketName='bucket-proto1'):
+    storage_client = storage.Client.from_service_account_json('pKey.json')
     # exists = Bucket(storage_client, moduleName).exists()
     bucket = storage_client.bucket(bucketName)
     blob = bucket.blob(moduleName)
@@ -61,6 +62,7 @@ def downloadFromBucket(moduleName, bucketName='bucket-proto1'):
         return 0
 
 def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1'):
+    storage_client = storage.Client.from_service_account_json('pKey.json')
     # destination_blob_name = "storage-object-name"
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(destination_blob_name)
@@ -141,19 +143,20 @@ def uploadRatings(Name,Version,ratings,URL,JS = None,trusted = False):
 
 def rate_Package(URL):
     default = {"URL":URL,"NetScore":-1,"RampUp":-1,"Correctness":-1,"BusFactor":-1,"ResponsiveMaintainer":-1,"License":-1}
-    # if URL == None:
-    #     return default
-    # # os.chdir('/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/')
-    # f = open("url.txt","w")
-    # f.write(URL)
-    # f.close()
-    # # subprocess.run(['/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/run','install'])
-    # subprocess.run(['run','build'])
-    # result = subprocess.run(['run', "url.txt"],capture_output = True, text = True)
-    # output = result.stdout
-    # # os.chdir("/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/Flask/")
-    # if output != '' and output != None:
-    #     return json.loads(output)
+    if URL == None:
+        return default
+    # os.chdir('/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/')
+    os.chdir('..')
+    f = open("url.txt","w")
+    f.write(URL)
+    f.close()
+    # subprocess.run(['/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/run','install'])
+    subprocess.run(['run','build'])
+    result = subprocess.run(['run', "url.txt"],capture_output = True, text = True)
+    output = result.stdout
+    # os.chdir("/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/Flask/")
+    if output != '' and output != None:
+        return json.loads(output)
     # else:
     return default
 

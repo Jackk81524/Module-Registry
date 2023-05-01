@@ -15,7 +15,7 @@ load_dotenv()
 
 app = create_app()
 BASE = 'https://module-registry-website-4a33ebcq3a-uc.a.run.app/'
-#BASE = 'http://localhost:8080/'
+# BASE = 'http://localhost:800/'
 
 @app.route("/")
 def defaultPage():
