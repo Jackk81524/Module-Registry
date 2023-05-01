@@ -21,29 +21,27 @@ import tempfile
 # Authentication Step for Google Cloud Storage Services
 # storage_client = storage.Client()
 
-# def updatePackage():
-#     JS = request.json["JSProgram"]
-#     if "URL" in request.json and request.json["URL"] != None:
-#         print("here url")
-#         URL = request.json["URL"]
-#         MetaData = get_packageJson(URL)
-#         ratings = rate_Package(URL)
-#         uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,JS,trusted=True)
-#         ZipFile = download_fromURL(URL)
-#         ZipFile = base64.b64encode(ZipFile.read()).decode('utf-8')
-#         uploadToBucket(ZipFile,MetaData.blob_name(), 'bucket-proto1')
-#         Data = PackageData(JS,ZipFile)
-#         return make_response(jsonify({'metadata': MetaData.to_dict(),"data": Data.to_dict()}), 200)
-#     elif "ZipFile" in request.json and request.json["ZipFile"] != None:
-#         print("here zip")
-#         ZipFile_bytes = base64.b64decode(request.json["ZipFile"].encode('utf-8'))
-#         ZipFile_buffer = io.BytesIO(ZipFile_bytes)
-#         #MetaData, URL = extract_packageURL(ZipFile_buffer)
-#         #ratings = rate_Package(URL)
-#         #uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,JS,trusted=True)
-#         uploadToBucket(request.json["ZipFile"],"MetaData.blob_name()", 'bucket-proto1')
-#         #Data = PackageData(JS,request.json["ZipFile"])
-#         return make_response(jsonify({'metadata': MetaData.to_dict(),"data": Data.to_dict()}), 200)
+def updatePackage(MetaData,Data,ID):
+    JS = request.json["JSProgram"]
+    if "URL" in Data and Data["URL"] != None:
+        URL = Data["URL"]
+        MetaData = get_packageJson(URL)
+        ratings = rate_Package(URL)
+        uploadRatings(MetaData["Name"],MetaData["Version"],ratings,URL,Data["JSProgram"],trusted=True,ID)
+        ZipFile = download_fromURL(URL)
+        ZipFile = base64.b64encode(ZipFile.read()).decode('utf-8')
+        uploadToBucket(ZipFile,MetaData.blob_name(), 'bucket-proto1')
+        Data = PackageData(JS,ZipFile,URL)
+        return make_response(jsonify({'description': 'Version is updated.'), 200)
+    elif "ZipFile" in request.json and request.json["ZipFile"] != None:
+        ZipFile_bytes = base64.b64decode(request.json["ZipFile"].encode('utf-8'))
+        ZipFile_buffer = io.BytesIO(ZipFile_bytes)
+        #MetaData, URL = extract_packageURL(ZipFile_buffer)
+        #ratings = rate_Package(URL)
+        #uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,JS,trusted=True)
+        uploadToBucket(request.json["ZipFile"],"MetaData.blob_name()", 'bucket-proto1')
+        #Data = PackageData(JS,request.json["ZipFile"])
+        return make_response(jsonify({'metadata': MetaData.to_dict(),"data": Data.to_dict()}), 200)
 
 def OffsetReturn(output,offset):
     perPage = 15
@@ -173,8 +171,8 @@ def rate_Package(URL):
     # os.chdir('/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/')
     with tempfile.NamedTemporaryFile(mode='w') as f:
         f.write(URL)
-        subprocess.run(['/workspace/../run','build'])
-        result = subprocess.run(['/workspace/../run', f.name],capture_output = True, text = True)
+        subprocess.run(['./run','build'])
+        result = subprocess.run(['./run', f.name],capture_output = True, text = True)
         output = result.stdout
         print(output)
     # os.chdir("/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/Flask/")
