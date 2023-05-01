@@ -14,7 +14,7 @@ import io
 from google.cloud import storage
 from google.cloud.storage import Bucket
 from dotenv import load_dotenv
-
+import tempfile
 # ONLY for testing purposes on local machine. Private Key Grab and Authentication ONLY required to test on local machine. You need to have pKey.json in directory for below code to run.
 # storage_client = storage.Client.from_service_account_json('pKey.json')
 
@@ -147,13 +147,12 @@ def rate_Package(URL):
         return default
     # os.chdir('/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/')
     os.chdir('..')
-    f = open("url.txt","w")
-    f.write(URL)
-    f.close()
-    # subprocess.run(['/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/run','install'])
-    subprocess.run(['run','build'])
-    result = subprocess.run(['run', "url.txt"],capture_output = True, text = True)
-    output = result.stdout
+    with tempfile.NamedTemporaryFile(mode='w') as f:
+        f.write(URL)
+        # subprocess.run(['/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/run','install'])
+        subprocess.run(['run','build'])
+        result = subprocess.run(['run', f.name],capture_output = True, text = True)
+        output = result.stdout
     # os.chdir("/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/Flask/")
     if output != '' and output != None:
         return json.loads(output)
