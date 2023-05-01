@@ -107,7 +107,6 @@ def download_fromURL(URL):
     api_url = urls[0] + '//api.' + urls[2] + '/repos/' + urls[3] + "/" + urls[4]
     filename = urls.pop()
     response = requests.get(api_url, headers = {'Authorization': 'token ' + token})
-    print(api_url)
     default_branch = response.json()["default_branch"]
     zip_url = f"{URL}/archive/{default_branch}.zip"
     response = requests.get(zip_url)
