@@ -149,7 +149,7 @@ def rate_Package(URL):
     # os.chdir('/home/shay/a/knox36/Documents/Module-Reg-withSwagger/Module-Registry/')
     with tempfile.NamedTemporaryFile(mode='w') as f:
         f.write(URL)
-        subprocess.run(['/workspace/../run',build])
+        subprocess.run(['/workspace/../run','build'])
         result = subprocess.run(['/workspace/../run', f.name],capture_output = True, text = True)
         output = result.stdout
         print(output)
