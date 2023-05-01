@@ -22,22 +22,21 @@ import tempfile
 # storage_client = storage.Client()
 
 def updatePackage(MetaData,Data,ID):
-    JS = request.json["JSProgram"]
     if "URL" in Data and Data["URL"] != None:
         URL = Data["URL"]
         ratings = rate_Package(URL)
-        add_package(MetaData["Name"],MetaData["Version"],ratings,URL,JS)
+        add_package(MetaData["Name"],MetaData["Version"],ratings,URL,ID=ID,JS=None)
         ZipFile = download_fromURL(URL)
         ZipFile = base64.b64encode(ZipFile.read()).decode('utf-8')
-        uploadToBucket(ZipFile,MetaData.blob_name(), 'bucket-proto1')
-        Data = PackageData(JS,ZipFile,URL)
+        MetaDataObj = PackageMetadata(MetaData["Name"],MetaData["Version"])
+        uploadToBucket(ZipFile,MetaDataObj.blob_name(), 'bucket-proto1')
         return make_response(jsonify({'description': 'Version is updated.'}), 200)
     elif "Content" in Data and Data["Content"] != None:
         ZipFile_bytes = base64.b64decode(Data["Content"].encode('utf-8'))
         ZipFile_buffer = io.BytesIO(ZipFile_bytes)
         MetaData, URL = extract_packageURL(ZipFile_buffer)
         ratings = rate_Package(URL)
-        add_package(MetaData["Name"],MetaData["Version"],ratings,URL)
+        add_package(MetaData["Name"],MetaData["Version"],ratings,URL,ID=ID,JS=None)
         MetaDataObj = MetaData(MetaData["Name"],MetaData["Version"])
         uploadRatings(MetaDataObj.Name.Name,MetaDataObj.Version.Version,ratings,URL,ID,JS,trusted=True)
         uploadToBucket(Data["Content"],MetaDataObj.blob_name(), 'bucket-proto1')
@@ -101,11 +100,12 @@ def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1')
         return 0
 
 def download_fromURL(URL):
-    token = os.getenv("GITHUB_TOKEN")
+    token = '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'
     urls = URL.split("/")
     api_url = urls[0] + '//api.' + urls[2] + '/repos/' + urls[3] + "/" + urls[4]
     filename = urls.pop()
     response = requests.get(api_url, headers = {'Authorization': 'token ' + token})
+    print(api_url)
     default_branch = response.json()["default_branch"]
     zip_url = f"{URL}/archive/{default_branch}.zip"
     response = requests.get(zip_url)

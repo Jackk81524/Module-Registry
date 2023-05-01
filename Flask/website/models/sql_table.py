@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask import make_response,jsonify
 from sqlalchemy import text
 import sqlalchemy
 from google.cloud.sql.connector import Connector, IPTypes
@@ -100,10 +101,11 @@ def query_all_packages():
 def delete_by_id(ID):
     Exists = db.session.query(Packages_table).filter_by(ID=ID).all()
     if Exists != []:
-        db.session.delete(Packages_table).filter_by(ID=ID).all()
+        db.session.query(Packages_table).filter_by(ID=ID).delete()
         db.session.commit()
     else:
         return make_response(jsonify({'desciption' : 'Package does not exist.'}), 404)
+    return make_response(jsonify({'desciption' : 'Success.'}), 200)
 
 def reset_all_packages():
     # client = storage.Client()

@@ -54,13 +54,12 @@ class Package(Resource):
     def put(self,id):
         MetaData = request.json["metadata"]
         Data = request.json["data"]
-        
         ID = PackageID(id).ID
         Data = request.json["data"]
         response2 = delete_by_id(ID)
-        if response2.error_status == 404:
-            return response2.json(), 404
-        
+        if response2.status_code == 404:
+             return make_response(jsonify({'desciption' : 'Package does not exist.'}), 404)
+        ret = updatePackage(MetaData,Data,id)
         return {"description" : "Version is updated"}
 
     def delete(self,id):
