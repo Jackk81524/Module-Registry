@@ -107,7 +107,7 @@ def delete_by_id(ID):
 
 def reset_all_packages():
     client = storage.Client()
-    bucket = client.bcket('bucket-proto1')
+    bucket = client.bucket('bucket-proto1')
     for blob in bucket.list_blobs():
         blob.delete()
     db.session.query(Packages_table).delete()
