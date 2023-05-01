@@ -142,6 +142,7 @@ def extract_packageURL(ZipFile):
                 else:
                     with archive.open(info.filename) as f:
                         data = json.loads(f.read())
+    print(data)
     if "homepage" in data:
         return PackageMetadata(data["name"],data["version"]),data["homepage"]
     else:

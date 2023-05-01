@@ -73,7 +73,6 @@ class PackageCreate(Resource):
     def post(self):
         JS = request.json["JSProgram"]
         if "URL" in request.json and request.json["URL"] != None:
-            print("here url")
             URL = request.json["URL"]
             MetaData = get_packageJson(URL)
             ratings = rate_Package(URL)
@@ -84,14 +83,13 @@ class PackageCreate(Resource):
             Data = PackageData(JS,ZipFile)
             return make_response(jsonify({'metadata': MetaData.to_dict(),"data": Data.to_dict()}), 200)
         elif "Content" in request.json and request.json["Content"] != None:
-            print("here zip")
             ZipFile_bytes = base64.b64decode(request.json["Content"].encode('utf-8'))
             ZipFile_buffer = io.BytesIO(ZipFile_bytes)
             MetaData, URL = extract_packageURL(ZipFile_buffer)
             ratings = rate_Package(URL)
             uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,JS,trusted=True)
             uploadToBucket(request.json["Content"],MetaData.blob_name(), 'bucket-proto1')
-            Data = PackageData(JS,request.json["ZipFile"])
+            Data = PackageData(JS,request.json["Content"])
             return make_response(jsonify({'metadata': MetaData.to_dict(),"data": Data.to_dict()}), 200)
         return {'description' : 'Not as expected'}
 
