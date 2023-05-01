@@ -53,13 +53,13 @@ class PackagesList(Resource):
 
 class RegistryReset(Resource):
     def delete(self):
-        logger.info(f'Request_log: {request.path},{request.json},{request.method},{datetime.datetime.now()}')
+        logger.info(f'Request_log: {request.path},{request.method},{datetime.datetime.now()}')
         reset_all_packages()
         return make_response(jsonify({'description': 'Registry is reset.'}), 200)
 
 class Package(Resource):
     def get(self,id):
-        logger.info(f'Request_log: {request.path},{request.json},{request.method},{datetime.datetime.now()}')
+        logger.info(f'Request_log: {request.path},{request.method},{datetime.datetime.now()}')
         ID = PackageID(id).ID
         Info = query_byID(ID)
         if Info != []:
@@ -119,7 +119,7 @@ class PackageCreate(Resource):
 
 class PackageRate(Resource):
     def get(self,id):
-        logger.info(f'Request_log: {request.path},{request.json},{request.method},{datetime.datetime.now()}')
+        logger.info(f'Request_log: {request.path},{request.method},{datetime.datetime.now()}')
         ID = PackageID(id).ID
         Info = query_byID(ID)
         print(Info)
