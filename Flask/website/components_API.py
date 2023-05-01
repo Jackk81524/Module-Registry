@@ -25,23 +25,24 @@ def updatePackage(MetaData,Data,ID):
     JS = request.json["JSProgram"]
     if "URL" in Data and Data["URL"] != None:
         URL = Data["URL"]
-        MetaData = get_packageJson(URL)
         ratings = rate_Package(URL)
-        uploadRatings(MetaData["Name"],MetaData["Version"],ratings,URL,Data["JSProgram"],trusted=True,ID)
+        add_package(MetaData["Name"],MetaData["Version"],ratings,URL,JS)
         ZipFile = download_fromURL(URL)
         ZipFile = base64.b64encode(ZipFile.read()).decode('utf-8')
         uploadToBucket(ZipFile,MetaData.blob_name(), 'bucket-proto1')
         Data = PackageData(JS,ZipFile,URL)
-        return make_response(jsonify({'description': 'Version is updated.'), 200)
-    elif "ZipFile" in request.json and request.json["ZipFile"] != None:
-        ZipFile_bytes = base64.b64decode(request.json["ZipFile"].encode('utf-8'))
+        return make_response(jsonify({'description': 'Version is updated.'}), 200)
+    elif "Content" in Data and Data["Content"] != None:
+        ZipFile_bytes = base64.b64decode(Data["Content"].encode('utf-8'))
         ZipFile_buffer = io.BytesIO(ZipFile_bytes)
-        #MetaData, URL = extract_packageURL(ZipFile_buffer)
-        #ratings = rate_Package(URL)
-        #uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,JS,trusted=True)
-        uploadToBucket(request.json["ZipFile"],"MetaData.blob_name()", 'bucket-proto1')
+        MetaData, URL = extract_packageURL(ZipFile_buffer)
+        ratings = rate_Package(URL)
+        add_package(MetaData["Name"],MetaData["Version"],ratings,URL)
+        MetaDataObj = MetaData(MetaData["Name"],MetaData["Version"])
+        uploadRatings(MetaDataObj.Name.Name,MetaDataObj.Version.Version,ratings,URL,ID,JS,trusted=True)
+        uploadToBucket(Data["Content"],MetaDataObj.blob_name(), 'bucket-proto1')
         #Data = PackageData(JS,request.json["ZipFile"])
-        return make_response(jsonify({'metadata': MetaData.to_dict(),"data": Data.to_dict()}), 200)
+        return make_response(jsonify({'description': 'Version is updated.'}), 200)
 
 def OffsetReturn(output,offset):
     perPage = 15

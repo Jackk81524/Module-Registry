@@ -52,14 +52,15 @@ class Package(Resource):
         return make_response(jsonify({'value' : [{'metadata' : MetaData.to_dict(ID = True)},{'data' : Data.to_dict(URL_check=True)}]}),200)
     
     def put(self,id):
-        ID = PackageID(id).ID
-        MetaData = request.json["MetaData"]
         MetaData = request.json["metadata"]
+        Data = request.json["data"]
+        
+        ID = PackageID(id).ID
         Data = request.json["data"]
         response2 = delete_by_id(ID)
         if response2.error_status == 404:
-            return response2.json()
-        update = requests.post(BASE + 'package',json=jsonify(Data), headers=headers)
+            return response2.json(), 404
+        
         return {"description" : "Version is updated"}
 
     def delete(self,id):
@@ -82,15 +83,15 @@ class PackageCreate(Resource):
             uploadToBucket(ZipFile,MetaData.blob_name(), 'bucket-proto1')
             Data = PackageData(JS,ZipFile)
             return make_response(jsonify({'metadata': MetaData.to_dict(),"data": Data.to_dict()}), 200)
-        elif "ZipFile" in request.json and request.json["ZipFile"] != None:
+        elif "Content" in request.json and request.json["Content"] != None:
             print("here zip")
-            ZipFile_bytes = base64.b64decode(request.json["ZipFile"].encode('utf-8'))
+            ZipFile_bytes = base64.b64decode(request.json["Content"].encode('utf-8'))
             ZipFile_buffer = io.BytesIO(ZipFile_bytes)
-            #MetaData, URL = extract_packageURL(ZipFile_buffer)
-            #ratings = rate_Package(URL)
-            #uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,JS,trusted=True)
-            uploadToBucket(request.json["ZipFile"],"MetaData.blob_name()", 'bucket-proto1')
-            #Data = PackageData(JS,request.json["ZipFile"])
+            MetaData, URL = extract_packageURL(ZipFile_buffer)
+            ratings = rate_Package(URL)
+            uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,JS,trusted=True)
+            uploadToBucket(request.json["Content"],MetaData.blob_name(), 'bucket-proto1')
+            Data = PackageData(JS,request.json["ZipFile"])
             return make_response(jsonify({'metadata': MetaData.to_dict(),"data": Data.to_dict()}), 200)
         return {'description' : 'Not as expected'}
 

@@ -53,18 +53,32 @@ class Packages_table(db.Model):
     JS = db.Column(db.String(1000),nullable = True)
 
 
-def add_package(Name,Version,ratings,URL,JS):
-    new_package = Packages_table(
-        NAME = Name,VERSION = Version,
-        NETSCORE = ratings["NetScore"],
-        RAMPUP = ratings["RampUp"],
-        CORRECTNESS = ratings["Correctness"],
-        BUSFACTOR = ratings["BusFactor"],
-        RESPONSIVEMAINTAINER = ratings["ResponsiveMaintainer"],
-        LICENSESCORE = ratings["License"],
-        URL = URL,
-        JS = JS
-        )
+def add_package(Name,Version,ratings,URL,JS,ID = None):
+    if ID == None:
+        new_package = Packages_table(
+            NAME = Name,VERSION = Version,
+            NETSCORE = ratings["NetScore"],
+            RAMPUP = ratings["RampUp"],
+            CORRECTNESS = ratings["Correctness"],
+            BUSFACTOR = ratings["BusFactor"],
+            RESPONSIVEMAINTAINER = ratings["ResponsiveMaintainer"],
+            LICENSESCORE = ratings["License"],
+            URL = URL,
+            JS = JS
+            )
+    else:
+        new_package = Packages_table(
+            NAME = Name,VERSION = Version,
+            NETSCORE = ratings["NetScore"],
+            RAMPUP = ratings["RampUp"],
+            CORRECTNESS = ratings["Correctness"],
+            BUSFACTOR = ratings["BusFactor"],
+            RESPONSIVEMAINTAINER = ratings["ResponsiveMaintainer"],
+            LICENSESCORE = ratings["License"],
+            URL = URL,
+            JS = JS,
+            ID = ID
+            )
     db.session.add(new_package)
     db.session.commit()
 
