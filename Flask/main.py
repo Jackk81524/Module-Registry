@@ -78,7 +78,7 @@ def getRateID():
     return send_from_directory('templates', 'rateID.html')
 
 
-@app.route("/packageIDRate", methods=["POST", "DELETE"])
+@app.route("/packageRatings", methods=["GET","POST", "DELETE"])
 def RateID():
     ID = request.form.get("Rate")
     data = requests.get(BASE + 'package/' + ID + "/rate")
@@ -103,7 +103,7 @@ def handleUploaded():
         response = requests.post(BASE + 'package', json={'URL': URL, 'Content': None, 'JSProgram': JS}, headers=headers)
     elif ZipFile != None:
         ZipFile_string = base64.b64encode(ZipFile.read()).decode('utf-8')
-        response = requests.post(BASE + 'package', json={'URL': None, 'oOntent': ZipFile_string, 'JSProgram': JS}, headers=headers)
+        response = requests.post(BASE + 'package', json={'URL': None, 'Content': ZipFile_string, 'JSProgram': JS}, headers=headers)
     else:
         abort(501)
     return response.json(), response.status_code
