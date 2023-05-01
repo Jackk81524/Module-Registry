@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+#Check is number of arguments match CLI requirements
+if test "$#" -ne 1; then
+    echo "Illegal number of parameters"
+    exit 1
+fi
+
+
+# Format needs to follow the autograder 
+
+# install argument
+if [[ $1 == "install" ]]; then
+    echo "Installation process has started"
+    pip3 install GitPython
+    pip3 install truckfactor
+
+
+# build argument
+elif [[ $1 == "build" ]]; then
+    echo "Compiling the program"
+    go build main.go
+
+
+# test argument
+elif [[ $1 == "test" ]]; then
+    echo -e "Initializing component testing\n"
+
+    # Loops through each components to test them
+    components=("bus_factor/" "clone_repo/" "correctiveness_calc/" "license_compatibility/" "npm/" "package_analyzer/" "rampuptime/" "responsiveness/")
+    for i in "${components[@]}"
+    do 
+        echo -e "\nComponent testing for $i"
+        cd "$i"
+        go test
+        cd ..
+    done
+
+    echo -e "\n\nChecking needed python libraries"
+    python3 main_python_test.py
+
+
+# URL program argument
+else
+    if ! command -v ./main &> /dev/null
+    then
+        echo '"build" command not ran, program not compiled yet'
+        exit 1
+    fi
+    chmod +x bus_factor/bus_factor.py
+    ./main "$1"
+fi

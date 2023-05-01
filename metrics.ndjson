@@ -1,0 +1,5 @@
+{"metric":"RAMP_UP_SCORE", "api":"rest", "filepath":"npm/get_info.go", "line":15}
+{"metric":"CORRECTNESS_SCORE", "api":"rest", "filepath":"npm/get_info.go", "line":15}
+{"metric":"BUS_FACTOR_SCORE", "api":"rest", "filepath":"npm/get_info.go", "line":15}
+{"metric":"RESPONSIVE_MAINTAINER_SCORE", "api":"rest", "filepath": "npm/get_info.go", "line":15}
+{"metric":"LICENSE_SCORE", "api":"rest", "filepath": "npm/get_info.go", "line":15}
