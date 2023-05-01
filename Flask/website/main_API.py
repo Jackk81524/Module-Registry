@@ -13,7 +13,7 @@ import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - Input: %(input)s, Type: %(type)s, Time: %(time)s')
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s,  Type: %(type)s, Time: %(time)s')
 
 console_handler = logging.StreamHandler()
 console_handler.setFormatter(formatter)
