@@ -97,10 +97,19 @@ class PackageCreate(Resource):
 
 class PackageRate(Resource):
     def get(self,id):
-        ID = PackageID(id)
-        uploadRatings(rate_Package('testfile.txt'))
+        ID = PackageID(id).ID
+        Info = query_byID(ID)
+        print(Info)
+        if Info != []:
+            Info = Info[0]
+        else:
+            return make_response(jsonify({'description' : 'Package does not exist.'}),404)
+        Rating = PackageRating(Info.RAMPUP,Info.CORRECTNESS,Info.BUSFACTOR,Info.RESPONSIVEMAINTAINER,Info.LICENSESCORE,Info.GOODPINNINGPRACTICE,Info.PULLREQUEST,Info.NETSCORE,Info.URL)
+        # for key, value in Rating.to_dict().items():
+        #     if value == -1.0:
+        #         return make_response(jsonify({'description' : "The package rating system choked on at least one of the metrics."}),500)
         # PackageRating = PackageRating(ratings)
-        return {'description':'Return the rating. Only use this if each metric was computed successfully.'}
+        return Rating.to_dict()
 
 # class CreateAuthToken(Resource):
 

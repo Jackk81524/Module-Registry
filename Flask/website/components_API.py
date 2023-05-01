@@ -62,8 +62,8 @@ def OffsetReturn(output,offset):
     return output[startIndex:endIndex]
 
 def downloadFromBucket(moduleName, bucketName='bucket-proto1'):
-    # storage_client = storage.Client.from_service_account_json('pKey.json')
-    storage_client = storage.Client()
+    storage_client = storage.Client.from_service_account_json('pKey.json')
+    # storage_client = storage.Client()
     # exists = Bucket(storage_client, moduleName).exists()
     bucket = storage_client.bucket(bucketName)
     blob = bucket.blob(moduleName)
@@ -85,8 +85,8 @@ def downloadFromBucket(moduleName, bucketName='bucket-proto1'):
         return 0
 
 def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1'):
-    # storage_client = storage.Client.from_service_account_json('pKey.json')
-    storage_client = storage.Client()
+    storage_client = storage.Client.from_service_account_json('pKey.json')
+    # storage_client = storage.Client()
     # destination_blob_name = "storage-object-name"
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(destination_blob_name)
@@ -299,7 +299,7 @@ class PackageData:
 
 
 class PackageRating:
-    def __init__(self,RampUp,Correctness,BusFactor,ResponsiveMaintainer,LicenseScore,GoodPinningPractice,PullRequest,NetScore):
+    def __init__(self,RampUp,Correctness,BusFactor,ResponsiveMaintainer,LicenseScore,GoodPinningPractice,PullRequest,NetScore,URL):
         self.RampUp = RampUp
         self.Correctness = Correctness
         self.BusFactor = BusFactor
@@ -308,6 +308,22 @@ class PackageRating:
         self.GoodPinningPractice = GoodPinningPractice
         self.PullRequest = PullRequest
         self.NetScore = NetScore
+        self.URL = URL
+
+    def to_dict(self):
+        ret = {
+            "URL":self.URL,
+            "NET_SCORE":self.NetScore,
+            "RAMP_UP_SCORE":self.RampUp,
+            "CORRECTNESS_SCORE":self.Correctness,
+            "BUS_FACTOR_SCORE": self.BusFactor,
+            "RESPONSIVE_MAINTAINER_SCORE": self.ResponsiveMaintainer,
+            "LICENSE_SCORE":self.LicenseScore,
+            "GOOD_PINNING_PRACTICE_SCORE": self.GoodPinningPractice,
+            "PULL_REQUEST_SCORE":self.PullRequest
+        }
+        return ret
+
 
 class PackageHistoryEntry:
     def __init__(self,User,Date,PackageMetadata,Action):
