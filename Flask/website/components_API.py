@@ -150,11 +150,11 @@ def extract_packageURL(ZipFile):
 
 def uploadRatings(Name,Version,ratings,URL,JS = None,trusted = False):
     if trusted:
-        # try:
-        #     ID = add_package(Name,Version,ratings,URL,JS)
-        # except:
-        #     abort(409, "Package exists already")
-        ID = add_package(Name,Version,ratings,URL,JS)
+        try:
+            ID = add_package(Name,Version,ratings,URL,JS)
+        except:
+            abort(409, "Package exists already")
+        # ID = add_package(Name,Version,ratings,URL,JS)
         return ID
     else:
         for metric,score in ratings.items():
