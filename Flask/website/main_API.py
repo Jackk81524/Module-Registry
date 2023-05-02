@@ -83,7 +83,7 @@ class Package(Resource):
         return {"description" : "Version is updated"}
 
     def delete(self,id):
-        print(f'Request_log: {request.path},{request.json},{request.method},{datetime.datetime.now()}')
+        print(f'Request_log: {request.path},{request.method},{datetime.datetime.now()}')
         ID = PackageID(id).ID
         response = delete_by_id(ID)
         if response.status_code == 404:
