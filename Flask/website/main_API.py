@@ -104,7 +104,7 @@ class PackageCreate(Resource):
             ZipFile = base64.b64encode(ZipFile.read()).decode('utf-8')
             uploadToBucket(ZipFile,MetaData.blob_name(), 'bucket-proto1')
             Data = PackageData(JS,ZipFile)
-            return make_response(jsonify({'metadata': MetaData.to_dict(),"data": Data.to_dict()}), 200)
+            return make_response(jsonify({'metadata': MetaData.to_dict(),"data": Data.to_dict()}), 201)
         elif "Content" in request.json and request.json["Content"] != None:
             ZipFile_bytes = base64.b64decode(request.json["Content"].encode('utf-8'))
             ZipFile_buffer = io.BytesIO(ZipFile_bytes)
@@ -113,7 +113,7 @@ class PackageCreate(Resource):
             uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,JS,trusted=True)
             uploadToBucket(request.json["Content"],MetaData.blob_name(), 'bucket-proto1')
             Data = PackageData(JS,request.json["Content"])
-            return make_response(jsonify({'metadata': MetaData.to_dict(),"data": Data.to_dict()}), 200)
+            return make_response(jsonify({'metadata': MetaData.to_dict(),"data": Data.to_dict()}), 201)
         return {'description' : 'Not as expected'}
 
 
