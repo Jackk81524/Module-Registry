@@ -102,7 +102,7 @@ def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1')
         return 0
 
 def download_fromURL(URL):
-    token = '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'
+    token = os.getenv("GITHUB_TOKEN")
     urls = URL.split("/")
     api_url = urls[0] + '//api.' + urls[2] + '/repos/' + urls[3] + "/" + urls[4]
     filename = urls.pop()
