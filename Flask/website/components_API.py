@@ -62,7 +62,7 @@ def OffsetReturn(output,offset):
     return output[startIndex:endIndex]
 
 def downloadFromBucket(moduleName, bucketName='bucket-proto1'):
-#     storage_client = storage.Client.from_service_account_json('pKey.json')
+    # storage_client = storage.Client.from_service_account_json('pKey.json')
     storage_client = storage.Client()
     # exists = Bucket(storage_client, moduleName).exists()
     bucket = storage_client.bucket(bucketName)
@@ -85,7 +85,7 @@ def downloadFromBucket(moduleName, bucketName='bucket-proto1'):
         return 0
 
 def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1'):
-#     storage_client = storage.Client.from_service_account_json('pKey.json')
+    # storage_client = storage.Client.from_service_account_json('pKey.json')
     storage_client = storage.Client()
     # destination_blob_name = "storage-object-name"
     bucket = storage_client.bucket(bucket_name)
@@ -102,7 +102,7 @@ def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1')
         return 0
 
 def download_fromURL(URL):
-    token = os.getenv('GITHUB_TOKEN')
+    token = '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'
     urls = URL.split("/")
     api_url = urls[0] + '//api.' + urls[2] + '/repos/' + urls[3] + "/" + urls[4]
     filename = urls.pop()
@@ -150,18 +150,19 @@ def extract_packageURL(ZipFile):
 
 def uploadRatings(Name,Version,ratings,URL,JS = None,trusted = False):
     if trusted:
-        try:
-            add_package(Name,Version,ratings,URL,JS)
-        except:
-            abort(409, "Package exists already")
-
-        return True
+        # try:
+        #     ID = add_package(Name,Version,ratings,URL,JS)
+        # except:
+        #     abort(409, "Package exists already")
+        ID = add_package(Name,Version,ratings,URL,JS)
+        return ID
     else:
         for metric,score in ratings.items():
             if metric != "URL":
                 if float(score) < 0.5:
                     return abort(424, "Package is not uploaded due to the disqualified rating.")
-        add_package(Name,Version,ratings,URL,JS)
+        ID =  add_package(Name,Version,ratings,URL,JS)
+    return ID
     
 
 

@@ -82,6 +82,8 @@ def add_package(Name,Version,ratings,URL,JS,ID = None):
             )
     db.session.add(new_package)
     db.session.commit()
+    Q = db.session.query(Packages_table).filter_by(NAME=Name,VERSION=Version)[0]
+    return (Q.ID)
 
 def query_package(Query):
     Name = Query.Name.Name

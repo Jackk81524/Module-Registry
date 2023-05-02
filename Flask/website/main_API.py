@@ -7,26 +7,26 @@ import json
 import base64
 import io
 # from main import storage_client
-import logging
+# import logging
 
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+# logger = logging.getLogger(__name__)
+# logger.setLevel(logging.INFO)
 
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s,  Type: %(type)s, Time: %(time)s')
+# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s,  Type: %(type)s, Time: %(time)s')
 
-console_handler = logging.StreamHandler()
-console_handler.setFormatter(formatter)
-logger.addHandler(console_handler)
+# console_handler = logging.StreamHandler()
+# console_handler.setFormatter(formatter)
+# logger.addHandler(console_handler)
 
-file_handler = logging.FileHandler('app.log')
-file_handler.setLevel(logging.INFO)
-file_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
+# file_handler = logging.FileHandler('app.log')
+# file_handler.setLevel(logging.INFO)
+# file_handler.setFormatter(formatter)
+# logger.addHandler(file_handler)
 
 class PackagesList(Resource):
     def post(self):
-        logger.info(f'Request_log: {request.path},{request.json},{request.method},{datetime.datetime.now()}')
+        print(f'Request_log: {request.path},{request.json},{request.method},{datetime.datetime.now()}')
         PackagesToQuery = request.json
         if(len(PackagesToQuery) > 100):
             return json.dumps({'message' : 'Too many packages returned.'}), 413
@@ -53,13 +53,13 @@ class PackagesList(Resource):
 
 class RegistryReset(Resource):
     def delete(self):
-        logger.info(f'Request_log: {request.path},{request.method},{datetime.datetime.now()}')
+        print(f'Request_log: {request.path},{request.method},{datetime.datetime.now()}')
         reset_all_packages()
         return make_response(jsonify({'description': 'Registry is reset.'}), 200)
 
 class Package(Resource):
     def get(self,id):
-        logger.info(f'Request_log: {request.path},{request.method},{datetime.datetime.now()}')
+        print(f'Request_log: {request.path},{request.method},{datetime.datetime.now()}')
         ID = PackageID(id).ID
         Info = query_byID(ID)
         if Info != []:
@@ -71,7 +71,7 @@ class Package(Resource):
         return make_response(jsonify({'value' : [{'metadata' : MetaData.to_dict(ID = True)},{'data' : Data.to_dict(URL_check=True)}]}),200)
     
     def put(self,id):
-        logger.info(f'Request_log: {request.path},{request.json},{request.method},{datetime.datetime.now()}')
+        print(f'Request_log: {request.path},{request.json},{request.method},{datetime.datetime.now()}')
         MetaData = request.json["metadata"]
         Data = request.json["data"]
         ID = PackageID(id).ID
@@ -83,7 +83,7 @@ class Package(Resource):
         return {"description" : "Version is updated"}
 
     def delete(self,id):
-        logger.info(f'Request_log: {request.path},{request.json},{request.method},{datetime.datetime.now()}')
+        print(f'Request_log: {request.path},{request.json},{request.method},{datetime.datetime.now()}')
         ID = PackageID(id).ID
         response = delete_by_id(ID)
         if response.status_code == 404:
@@ -93,36 +93,37 @@ class Package(Resource):
 
 class PackageCreate(Resource):
     def post(self):
-        logger.info(f'Request_log: {request.path},{request.json},{request.method},{datetime.datetime.now()}')
+        print(f'Request_log: {request.path},{request.json},{request.method},{datetime.datetime.now()}')
         JS = request.json["JSProgram"]
         if "URL" in request.json and request.json["URL"] != None:
             URL = request.json["URL"]
             MetaData = get_packageJson(URL)
             ratings = rate_Package(URL)
-            uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,JS,trusted=True)
+            idx = uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,JS,trusted=True)
+            MetaData.ID = idx
             ZipFile = download_fromURL(URL)
             ZipFile = base64.b64encode(ZipFile.read()).decode('utf-8')
             uploadToBucket(ZipFile,MetaData.blob_name(), 'bucket-proto1')
             Data = PackageData(JS,ZipFile)
-            return make_response(jsonify({'metadata': MetaData.to_dict(),"data": Data.to_dict()}), 200)
+            return make_response(jsonify({'metadata': MetaData.to_dict(ID=True),"data": Data.to_dict()}), 200)
         elif "Content" in request.json and request.json["Content"] != None:
             ZipFile_bytes = base64.b64decode(request.json["Content"].encode('utf-8'))
             ZipFile_buffer = io.BytesIO(ZipFile_bytes)
             MetaData, URL = extract_packageURL(ZipFile_buffer)
             ratings = rate_Package(URL)
-            uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,JS,trusted=True)
+            idx = uploadRatings(MetaData.Name.Name,MetaData.Version.Version,ratings,URL,JS,trusted=True)
+            MetaData.ID = idx
             uploadToBucket(request.json["Content"],MetaData.blob_name(), 'bucket-proto1')
             Data = PackageData(JS,request.json["Content"])
-            return make_response(jsonify({'metadata': MetaData.to_dict(),"data": Data.to_dict()}), 200)
+            return make_response(jsonify({'metadata': MetaData.to_dict(ID=True),"data": Data.to_dict()}), 200)
         return {'description' : 'Not as expected'}
 
 
 class PackageRate(Resource):
     def get(self,id):
-        logger.info(f'Request_log: {request.path},{request.method},{datetime.datetime.now()}')
+        print(f'Request_log: {request.path},{request.method},{datetime.datetime.now()}')
         ID = PackageID(id).ID
         Info = query_byID(ID)
-        print(Info)
         if Info != []:
             Info = Info[0]
         else:
@@ -138,7 +139,7 @@ class PackageRate(Resource):
 
 class PackageByRegExGet(Resource):
     def post(self,regex):
-        logger.info(f'Request_log: {request.path},{request.json},{request.method},{datetime.datetime.now()}')
+        print(f'Request_log: {request.path},{request.json},{request.method},{datetime.datetime.now()}')
         ## use regex expression to search database
         ## Return a list of packages metadata
         return 200
