@@ -240,7 +240,7 @@ class PackageID:
         if re.match(id_format, ID):
             self.ID = ID
         else:
-            raise ValueError("Must have a valid ID number")
+            abort(404,"Package does not exist.")
 class PackageQuery:
     def __init__(self,Name,Version=None):
         self.Name = PackageName(Name)

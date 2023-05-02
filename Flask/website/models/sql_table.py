@@ -110,8 +110,8 @@ def delete_by_id(ID):
     return make_response(jsonify({'desciption' : 'Success.'}), 200)
 
 def reset_all_packages():
-    storage_client = storage.Client()
-    # storage_client = storage.Client.from_service_account_json('pKey.json')
+    # storage_client = storage.Client()
+    storage_client = storage.Client.from_service_account_json('pKey.json')
     bucket = storage_client.bucket('bucket-proto1')
     for blob in bucket.list_blobs():
         blob.delete()
