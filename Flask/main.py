@@ -65,6 +65,31 @@ def displayID():
     data = requests.get(BASE + 'package/' + ID)
     return data.json(), data.status_code
 
+@app.route("/packageIDUpdate")
+def upadteID():
+    return send_from_directory('templates', 'update.html')
+
+@app.route("/packageUpdate",methods = ["POST"])
+def updateStatus():
+    ID = request.form.get("ID")
+    Name = request.form.get("Name")
+    Version = request.form.get("Version")
+    URL = request.form.get("URL")
+    ZipFile = request.files.get("File")
+    JS = request.form.get("JSProgram")
+    if len(JS) == 0:
+        JS = None
+    headers = {'Content-Type': 'application/json'}
+    if len(URL) != 0 and ZipFile.read() != b"":
+        abort(400)
+    elif URL != "":
+        response = requests.put(BASE + 'package/' + ID, json={"metadata" : {"Name" : Name,"Version" : Version}, "data" : {"Content" : None,"URL" : URL,"JSProgram":JS}}, headers=headers)
+    elif ZipFile != None:
+        ZipFile_string = base64.b64encode(ZipFile.read()).decode('utf-8')
+        response = requests.put(BASE + 'package/' + ID, json={"metadata" : {"Name" : Name,"Version" : Version}, "data" : {"Content" : ZipFile_string,"URL" : None,"JSProgram":JS}}, headers=headers)
+    else:
+        abort(501)
+    return response.json(), response.status_code
 
 @app.route("/packageIDDelete", methods=["POST", "DELETE"])
 def deleteID():

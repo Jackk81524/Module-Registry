@@ -25,7 +25,7 @@ def updatePackage(MetaData,Data,ID):
     if "URL" in Data and Data["URL"] != None:
         URL = Data["URL"]
         ratings = rate_Package(URL)
-        add_package(MetaData["Name"],MetaData["Version"],ratings,URL,ID=ID,JS=None)
+        add_package(MetaData["Name"],MetaData["Version"],ratings,URL,ID=ID,JS=Data["JSProgram"])
         ZipFile = download_fromURL(URL)
         ZipFile = base64.b64encode(ZipFile.read()).decode('utf-8')
         MetaDataObj = PackageMetadata(MetaData["Name"],MetaData["Version"])
@@ -34,11 +34,10 @@ def updatePackage(MetaData,Data,ID):
     elif "Content" in Data and Data["Content"] != None:
         ZipFile_bytes = base64.b64decode(Data["Content"].encode('utf-8'))
         ZipFile_buffer = io.BytesIO(ZipFile_bytes)
-        MetaData, URL = extract_packageURL(ZipFile_buffer)
+        MetaDatax, URL = extract_packageURL(ZipFile_buffer)
         ratings = rate_Package(URL)
-        add_package(MetaData["Name"],MetaData["Version"],ratings,URL,ID=ID,JS=None)
-        MetaDataObj = MetaData(MetaData["Name"],MetaData["Version"])
-        uploadRatings(MetaDataObj.Name.Name,MetaDataObj.Version.Version,ratings,URL,ID,JS,trusted=True)
+        MetaDataObj = PackageMetadata(MetaData["Name"],MetaData["Version"])
+        add_package(MetaData["Name"],MetaData["Version"],ratings,URL,ID=ID,JS=Data["JSProgram"])
         uploadToBucket(Data["Content"],MetaDataObj.blob_name(), 'bucket-proto1')
         #Data = PackageData(JS,request.json["ZipFile"])
         return make_response(jsonify({'description': 'Version is updated.'}), 200)
@@ -102,7 +101,7 @@ def uploadToBucket(contents, destination_blob_name, bucket_name='bucket-proto1')
         return 0
 
 def download_fromURL(URL):
-    token = os.getenv("GITHUB_TOKEN")
+    token = os.getenv('GITHUB_TOKEN')
     urls = URL.split("/")
     api_url = urls[0] + '//api.' + urls[2] + '/repos/' + urls[3] + "/" + urls[4]
     filename = urls.pop()
