@@ -129,9 +129,9 @@ class PackageRate(Resource):
         else:
             return make_response(jsonify({'description' : 'Package does not exist.'}),404)
         Rating = PackageRating(Info.RAMPUP,Info.CORRECTNESS,Info.BUSFACTOR,Info.RESPONSIVEMAINTAINER,Info.LICENSESCORE,Info.GOODPINNINGPRACTICE,Info.PULLREQUEST,Info.NETSCORE,Info.URL)
-        # for key, value in Rating.to_dict().items():
-        #     if value == -1.0:
-        #         return make_response(jsonify({'description' : "The package rating system choked on at least one of the metrics."}),500)
+        for key, value in Rating.to_dict().items():
+            if value == -1.0:
+                return make_response(jsonify({'description' : "The package rating system choked on at least one of the metrics."}),500)
         # PackageRating = PackageRating(ratings)
         return Rating.to_dict()
 
