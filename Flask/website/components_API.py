@@ -255,7 +255,7 @@ class SemverRange:
             self.Version = Version
         else:
             self.Version = None 
-            abort(500,"Invalid Version Format.")
+            abort(404,"Package does not exist.")
             ## log incorrect version format
 
 class PackageName:
@@ -263,13 +263,13 @@ class PackageName:
         name_format = (r'[ -~]+')
         search = re.search(r'\*', Name)
         if Name == None:
-            abort(500,"Invalid Name Format.")
+            abort(404,"Package does not exist.")
         elif (search != None and len(Name) != 1):
-            abort(500,"Invalid Name Format.")
+            abort(404,"Package does not exist.")
         elif re.match(name_format, Name):
             self.Name = Name
         else:
-            abort(500,"Invalid Name Format.")
+            abort(404,"Package does not exist.")
 
 class EnumerateOffset:
     def __init__(self,request):
