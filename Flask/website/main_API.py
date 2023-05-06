@@ -116,7 +116,7 @@ class PackageCreate(Resource):
             uploadToBucket(request.json["Content"],MetaData.blob_name(), 'bucket-proto1')
             Data = PackageData(JS,request.json["Content"])
             return make_response(jsonify({'metadata': MetaData.to_dict(ID=True),"data": Data.to_dict()}), 200)
-        return {'description' : 'Not as expected'}
+        return abort(400)
 
 
 class PackageRate(Resource):
